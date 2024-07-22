@@ -49,14 +49,23 @@ import Graphics.QML.Internal.Types
 
 import Control.Monad
 import Control.Monad.Trans.Maybe
+import Data.Bits (shiftL, (.|.))
+import qualified Data.ByteString as BS
+import qualified Data.ByteString.Unsafe as BSU
 import Data.Tagged
 import Data.Int
 import Data.Text (Text)
+import qualified Data.Text as Text
+import qualified Data.Text.Encoding as TE
 import qualified Data.Text.Foreign as T
+import Data.Word (Word16)
 import Foreign.C.Types
 import Foreign.Marshal.Alloc
+import Foreign.Marshal.Array (pokeArray)
+import Foreign.Marshal.Utils (copyBytes)
 import Foreign.Ptr
 import Foreign.Storable
+import System.IO (hFlush, stdout)
 
 --
 -- Boolean built-in type
@@ -138,6 +147,7 @@ instance Marshal Double where
 -- Text/QString built-in type
 --
 
+
 instance Marshal Text where
     type MarshalMode Text c d = ModeBidi c
     marshaller = Marshaller {
@@ -150,9 +160,10 @@ instance Marshal Text where
                 return (castPtr buf, fromIntegral len))
             uncurry T.fromPtr pair,
         mToCVal_ = \txt ptr -> do
-            array <- hsqmlWriteString
-                (T.lengthWord16 txt) (HsQMLStringHandle $ castPtr ptr)
-            T.unsafeCopyToPtr txt (castPtr array),
+            let bs = TE.encodeUtf16LE txt
+                ucs2Length = BS.length bs `div` 2
+            array <- hsqmlWriteString ucs2Length (HsQMLStringHandle $ castPtr ptr)
+            BSU.unsafeUseAsCStringLen bs (\(bsp, bslen) -> copyBytes (castPtr array) bsp bslen),
         mWithCVal_ = \txt f ->
             withStrHndl $ \(HsQMLStringHandle ptr) -> do
                 mToCVal txt $ castPtr ptr

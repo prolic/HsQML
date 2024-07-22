@@ -1,8 +1,8 @@
+cabal-version:      3.8
 Name:               hsqml
-Version:            0.3.5.1
-Cabal-version:      >= 1.24
+Version:            0.3.6.0
 Build-type:         Custom
-License:            BSD3
+License:            BSD-3-Clause
 License-file:       LICENSE
 Copyright:          (c) 2010-2018 Robin KAY
 Author:             Robin KAY
@@ -48,18 +48,19 @@ Custom-Setup
     Setup-depends:
         base             == 4.*,
         template-haskell == 2.*,
-        Cabal            >= 2.0 && < 2.1,
-        filepath         >= 1.3 && < 1.5
+        Cabal            >= 3.0 && < 4.0,
+        filepath         >= 1.3 && < 1.6
 
 Library
     Default-language: Haskell2010
     Build-depends:
         base         == 4.*,
-        containers   >= 0.4 && < 0.6,
-        filepath     >= 1.3 && < 1.5,
-        text         >= 0.11 && < 1.3,
+        bytestring,
+        containers   >= 0.4 && < 0.7,
+        filepath     >= 1.3 && < 1.6,
+        text         >= 2.0 && < 2.1,
         tagged       >= 0.4 && < 0.9,
-        transformers >= 0.2 && < 0.6
+        transformers >= 0.2 && < 0.7
     Exposed-modules:
         Graphics.QML
         Graphics.QML.Debug
@@ -97,7 +98,7 @@ Library
         cbits/Model.h
     CC-options: --std=c++11
     X-separate-cbits: True
-    Build-tools: c2hs
+    build-tool-depends: c2hs:c2hs
     if flag(ForceGHCiLib)
         X-force-ghci-lib: True
     if flag(UseExitHook)
@@ -135,11 +136,11 @@ Test-Suite hsqml-test1
     Main-is: Test1.hs
     Build-depends:
         base       == 4.*,
-        containers >= 0.4 && < 0.6,
+        containers >= 0.4 && < 0.7,
         directory  >= 1.1 && < 1.4,
-        text       >= 0.11 && < 1.3,
+        text       >= 2.0 && < 2.1,
         tagged     >= 0.4 && < 0.9,
-        QuickCheck >= 2.4 && < 2.12,
+        QuickCheck >= 2.4 && < 2.14,
         hsqml
     Other-modules:
         Graphics.QML.Test.AutoListTest
