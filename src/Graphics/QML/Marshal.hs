@@ -154,11 +154,12 @@ instance Marshal Text where
         mTypeCVal_ = Tagged tyString,
         mFromCVal_ = \ptr -> errIO $ do
             pair <- alloca (\bufPtr -> do
-                len <- hsqmlReadString (
-                    HsQMLStringHandle $ castPtr ptr) bufPtr
+                len <- hsqmlReadString (HsQMLStringHandle $ castPtr ptr) bufPtr
                 buf <- peek bufPtr
-                return (castPtr buf, fromIntegral len))
-            uncurry T.fromPtr pair,
+                return (buf, len))
+            let (buf, len) = pair
+            bs <- BS.packCStringLen (castPtr buf, len * 2)
+            return $ TE.decodeUtf16LE bs,
         mToCVal_ = \txt ptr -> do
             let bs = TE.encodeUtf16LE txt
                 ucs2Length = BS.length bs `div` 2
