@@ -7,3 +7,5 @@ please see the project's web site.
 
 Home Page:        http://www.gekkou.co.uk/software/hsqml/
 Darcs Repository: http://hub.darcs.net/komadori/HsQML
+
+Note: I made some changes, so this library works on newer GHC / cabal versions and has been tested on Qt5.
