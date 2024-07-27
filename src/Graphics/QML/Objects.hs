@@ -245,7 +245,7 @@ instance (Marshal a, CanReturnTo a ~ Yes) =>
     in Tagged $ MethodTypeInfo [] typ
 
 mkUniformFunc :: forall tt ms.
-  (Marshal tt, CanGetFrom tt ~ Yes, IsObjType tt ~ Yes,
+  (Marshal tt,
     MethodSuffix ms) =>
   (tt -> ms) -> UniformFunc
 mkUniformFunc f = \pt pv -> do
@@ -263,9 +263,12 @@ class IsVoidIO a
 instance (IsVoidIO b) => IsVoidIO (a -> b)
 instance IsVoidIO VoidIO
 
-mkSpecialFunc :: forall tt ms.
-    (Marshal tt, CanGetFrom tt ~ Yes, IsObjType tt ~ Yes,
-        MethodSuffix ms, IsVoidIO ms) => (tt -> ms) -> UniformFunc
+mkSpecialFunc
+  :: forall tt ms.
+    ( Marshal tt
+    , MethodSuffix ms)
+  => (tt -> ms)
+  -> UniformFunc
 mkSpecialFunc f = \pt pv -> do
     hndl <- hsqmlGetObjectFromPointer pt
     this <- mFromHndl hndl
@@ -278,7 +281,7 @@ mkSpecialFunc f = \pt pv -> do
 -- there may be zero or more parameter arguments followed by an optional return
 -- argument in the IO monad.
 defMethod :: forall tt ms.
-  (Marshal tt, CanGetFrom tt ~ Yes, IsObjType tt ~ Yes, MethodSuffix ms) =>
+  (Marshal tt, MethodSuffix ms) =>
   String -> (tt -> ms) -> Member (GetObjType tt)
 defMethod name f =
   let crude = untag (mkMethodTypes :: Tagged ms MethodTypeInfo)
@@ -341,7 +344,7 @@ defSignalNamedParams name key pnames =
 -- This function is safe to call from any thread. Any attached signal handlers
 -- will be executed asynchronously on the event loop thread.
 fireSignal ::
-    forall tt skv. (Marshal tt, CanPassTo tt ~ Yes, IsObjType tt ~ Yes,
+    forall tt skv. (Marshal tt,
         SignalKeyValue skv) => skv -> tt -> SignalValueParams skv
 fireSignal key this =
     let start cnt = postJob $ do
@@ -365,8 +368,8 @@ data SignalData = SignalData HsQMLObjectHandle Int
 newtype SignalKey p = SignalKey Unique
 
 -- | Creates a new 'SignalKey'. 
-newSignalKey :: (SignalSuffix p) => IO (SignalKey p)
-newSignalKey = fmap SignalKey $ newUnique
+newSignalKey :: IO (SignalKey p)
+newSignalKey = fmap SignalKey newUnique
 
 -- | Instances of the 'SignalKeyClass' class identify distinct signals by type.
 -- The associated 'SignalParams' type specifies the signal's signature.
@@ -419,7 +422,7 @@ instance SignalSuffix (IO ()) where
 -- | Defines a named constant property using an accessor function in the IO
 -- monad.
 defPropertyConst :: forall tt tr.
-    (Marshal tt, CanGetFrom tt ~ Yes, IsObjType tt ~ Yes, Marshal tr,
+    (Marshal tt, CanGetFrom tt ~ Yes, Marshal tr,
         CanReturnTo tr ~ Yes) => String ->
     (tt -> IO tr) -> Member (GetObjType tt)
 defPropertyConst name g = Member ConstPropertyMember
@@ -433,7 +436,7 @@ defPropertyConst name g = Member ConstPropertyMember
 -- | Defines a named read-only property using an accessor function in the IO
 -- monad.
 defPropertyRO :: forall tt tr.
-    (Marshal tt, CanGetFrom tt ~ Yes, IsObjType tt ~ Yes, Marshal tr,
+    (Marshal tt, CanGetFrom tt ~ Yes, Marshal tr,
         CanReturnTo tr ~ Yes) => String ->
     (tt -> IO tr) -> Member (GetObjType tt)
 defPropertyRO name g = Member PropertyMember
@@ -446,7 +449,7 @@ defPropertyRO name g = Member PropertyMember
 
 -- | Defines a named read-only property with an associated signal.
 defPropertySigRO :: forall tt tr skv.
-    (Marshal tt, CanGetFrom tt ~ Yes, IsObjType tt ~ Yes, Marshal tr,
+    (Marshal tt, CanGetFrom tt ~ Yes, Marshal tr,
         CanReturnTo tr ~ Yes, SignalKeyValue skv) => String -> skv ->
     (tt -> IO tr) -> Member (GetObjType tt)
 defPropertySigRO name key g = Member PropertyMember
@@ -460,7 +463,7 @@ defPropertySigRO name key g = Member PropertyMember
 -- | Defines a named read-write property using a pair of accessor and mutator
 -- functions in the IO monad.
 defPropertyRW :: forall tt tr.
-    (Marshal tt, CanGetFrom tt ~ Yes, IsObjType tt ~ Yes, Marshal tr,
+    (Marshal tt, CanGetFrom tt ~ Yes, Marshal tr,
         CanReturnTo tr ~ Yes, CanGetFrom tr ~ Yes) => String ->
     (tt -> IO tr) -> (tt -> tr -> IO ()) -> Member (GetObjType tt)
 defPropertyRW name g s = Member PropertyMember
@@ -473,7 +476,7 @@ defPropertyRW name g s = Member PropertyMember
 
 -- | Defines a named read-write property with an associated signal.
 defPropertySigRW :: forall tt tr skv.
-    (Marshal tt, CanGetFrom tt ~ Yes, IsObjType tt ~ Yes, Marshal tr,
+    (Marshal tt, CanGetFrom tt ~ Yes, Marshal tr,
         CanReturnTo tr ~ Yes, CanGetFrom tr ~ Yes, SignalKeyValue skv) =>
     String -> skv -> (tt -> IO tr) -> (tt -> tr -> IO ()) ->
     Member (GetObjType tt)

@@ -12,6 +12,7 @@ import Distribution.PackageDescription
 import Distribution.Simple
 import Distribution.Simple.BuildPaths
 import Distribution.Simple.Compiler
+import Distribution.Simple.PreProcess.Types (Suffix(..))
 import Distribution.Simple.LocalBuildInfo
 import Distribution.Simple.Program
 import Distribution.Simple.Program.Ld
@@ -181,7 +182,7 @@ buildGHCiFix verb pkgDesc lbi lib =
         hsObjs = map ((bDir </>) . (<.> "o")) ms
         lname  = getHSLibraryName $ componentUnitId clbi
     stubObjs <- fmap catMaybes $
-      mapM (findFileWithExtension ["o"] [bDir]) $ map (++ "_stub") ms
+      mapM (findFileWithExtension [Suffix "o"] [bDir]) $ map (++ "_stub") ms
     (ld,_) <- requireProgram verb ldProgram (withPrograms lbi)
     combineObjectFiles verb lbi ld (bDir </> lname <.> "o") (stubObjs ++ hsObjs)
     (ghc,_) <- requireProgram verb ghcProgram (withPrograms lbi)

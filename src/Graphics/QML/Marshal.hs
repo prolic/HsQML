@@ -3,6 +3,7 @@
     TypeFamilies,
     FlexibleInstances
   #-}
+{-# OPTIONS_GHC -Wno-orphans #-}
 
 -- | Type classs and instances for marshalling values between Haskell and QML.
 module Graphics.QML.Marshal (
@@ -49,23 +50,17 @@ import Graphics.QML.Internal.Types
 
 import Control.Monad
 import Control.Monad.Trans.Maybe
-import Data.Bits (shiftL, (.|.))
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Unsafe as BSU
 import Data.Tagged
 import Data.Int
 import Data.Text (Text)
-import qualified Data.Text as Text
 import qualified Data.Text.Encoding as TE
-import qualified Data.Text.Foreign as T
-import Data.Word (Word16)
 import Foreign.C.Types
 import Foreign.Marshal.Alloc
-import Foreign.Marshal.Array (pokeArray)
 import Foreign.Marshal.Utils (copyBytes)
 import Foreign.Ptr
 import Foreign.Storable
-import System.IO (hFlush, stdout)
 
 --
 -- Boolean built-in type
