@@ -10,6 +10,7 @@
 
 #include "Canvas.h"
 #include "Class.h"
+#include "ClipboardHelper.h"
 #include "Engine.h"
 #include "Manager.h"
 #include "Model.h"
@@ -430,6 +431,8 @@ HsQMLManagerApp::HsQMLManagerApp()
         "HsQML.Canvas", 1, 0, "OpenGLContextControl");
     qmlRegisterType<HsQMLAutoListModel>(
         "HsQML.Model", 1, 0, "AutoListModel");
+    qmlRegisterType<HsQMLClipboardHelper>(
+        "HsQML.Clipboard", 1, 0, "ClipboardHelper");
 }
 
 HsQMLManagerApp::~HsQMLManagerApp()

@@ -85,6 +85,7 @@ Library
     C-sources:
         cbits/Canvas.cpp
         cbits/Class.cpp
+        cbits/ClipboardHelper.cpp
         cbits/Engine.cpp
         cbits/Intrinsics.cpp
         cbits/Manager.cpp
@@ -93,6 +94,7 @@ Library
     Include-dirs: cbits
     X-moc-headers:
         cbits/Canvas.h
+        cbits/ClipboardHelper.h
         cbits/Engine.h
         cbits/Manager.h
         cbits/Model.h
