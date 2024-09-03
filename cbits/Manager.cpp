@@ -487,6 +487,21 @@ int HsQMLManagerApp::exec()
     return mApp.exec();
 }
 
+void HsQMLManagerApp::setWindowIcon(QIcon* icon)
+{
+    if (icon != nullptr) {
+        mApp.setWindowIcon(*icon);
+        delete icon;
+    }
+}
+
+void HsQMLManager::setWindowIcon(const QString& iconPath)
+{
+    if (mApp != nullptr) {
+        mApp->setWindowIcon(new QIcon(iconPath));
+    }
+}
+
 extern "C" void hsqml_init(
     void (*freeFun)(HsFunPtr),
     void (*freeStable)(HsStablePtr))
@@ -569,4 +584,10 @@ extern "C" void hsqml_set_debug_loglevel(int ll)
 {
     Q_ASSERT (gManager);
     gManager->setLogLevel(ll);
+}
+
+extern "C" void hsqml_set_window_icon(const char* iconPath) {
+    if (gManager) {
+        gManager->setWindowIcon(QString::fromUtf8(iconPath));
+    }
 }
