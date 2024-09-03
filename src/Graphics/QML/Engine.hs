@@ -12,7 +12,8 @@ module Graphics.QML.Engine (
     initialDocument,
     contextObject,
     importPaths,
-    pluginPaths),
+    pluginPaths,
+    iconPath),
   defaultEngineConfig,
   Engine,
   runEngine,
@@ -59,6 +60,8 @@ import qualified Data.Text as T
 import Data.List
 import Data.Traversable (sequenceA)
 import Data.Typeable
+import Foreign.C.String (CString, withCString)
+import Foreign.C.Types (CChar)
 import Foreign.Marshal.Array
 import Foreign.Ptr
 import Foreign.Storable
@@ -74,8 +77,12 @@ data EngineConfig = EngineConfig {
   -- | Additional search paths for QML modules
   importPaths        :: [FilePath],
   -- | Additional search paths for QML native plugins
-  pluginPaths        :: [FilePath]
+  pluginPaths        :: [FilePath],
+  iconPath           :: Maybe FilePath
 }
+
+foreign import ccall "hsqml_set_window_icon" setWindowIcon :: Ptr CChar -> IO ()
+
 
 -- | Default engine configuration. Loads @\"main.qml\"@ from the current
 -- working directory into a visible window with no context object.
@@ -84,7 +91,8 @@ defaultEngineConfig = EngineConfig {
   initialDocument    = DocumentPath "main.qml",
   contextObject      = Nothing,
   importPaths        = [],
-  pluginPaths        = []
+  pluginPaths        = [],
+  iconPath           = Nothing
 }
 
 -- | Represents a QML engine.
@@ -96,17 +104,24 @@ runEngineAsync :: EngineConfig -> RunQML Engine
 runEngineAsync config = RunQML $ do
     hsqmlInit
     finishVar <- newEmptyMVar
+
     let obj = contextObject config
         DocumentPath res = initialDocument config
         impPaths = importPaths config
         plugPaths = pluginPaths config
         stopCb = putMVar finishVar () 
+
     ctxHndl <- sequenceA $ fmap mToHndl obj
     engHndl <- mWithCVal (T.pack res) $ \resPtr ->
         withManyArray0 mWithCVal (map T.pack impPaths) nullPtr $ \impPtr ->
         withManyArray0 mWithCVal (map T.pack plugPaths) nullPtr $ \plugPtr ->
             hsqmlCreateEngine ctxHndl (HsQMLStringHandle $ castPtr resPtr)
                 (castPtr impPtr) (castPtr plugPtr) stopCb
+
+    case iconPath config of
+        Just path -> liftIO $ withCString path setWindowIcon
+        Nothing -> return ()
+
     return $ Engine engHndl finishVar
 
 withMany :: (a -> (b -> m c) -> m c) -> [a] -> ([b] -> m c) -> m c

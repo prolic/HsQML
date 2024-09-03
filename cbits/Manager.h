@@ -11,6 +11,7 @@
 #include <QtCore/QVariant>
 #include <QtCore/QVector>
 #include <QtWidgets/QApplication>
+#include <QtGui/QIcon>
 
 #include "hsqml.h"
 
@@ -64,6 +65,7 @@ public:
     void postAppEvent(QEvent*);
     void zombifyClass(HsQMLClass*);
     EventLoopStatus shutdown();
+    void setWindowIcon(const QString& iconPath);
 
 private:
     friend class HsQMLManagerApp;
@@ -101,6 +103,7 @@ public:
     virtual ~HsQMLManagerApp();
     virtual void customEvent(QEvent*);
     virtual void timerEvent(QTimerEvent*);
+    virtual void setWindowIcon(QIcon*);
     int exec();
 
     enum CustomEventIndicies {
