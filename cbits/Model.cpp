@@ -1,4 +1,5 @@
 #include <QtCore/QMultiHash>
+#include <QtCore/QDebug>
 
 #include "Model.h"
 #include "Manager.h"

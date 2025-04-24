@@ -31,7 +31,8 @@ module Graphics.QML.Engine (
   setQtArgs,
   getQtArgs,
   QtFlag(
-    QtShareOpenGLContexts),
+    QtShareOpenGLContexts,
+    QtEnableQMLDebug),
   setQtFlag,
   getQtFlag,
   shutdownQt,
@@ -272,10 +273,12 @@ data QtFlag
     -- | Enables resource sharing between OpenGL contexts. This must be set in
     -- order to use QtWebEngine. 
     = QtShareOpenGLContexts
+    | QtEnableQMLDebug
     deriving Show
 
 internalFlag :: QtFlag -> HsQMLGlobalFlag
 internalFlag QtShareOpenGLContexts = HsqmlGflagShareOpenglContexts
+internalFlag QtEnableQMLDebug = HsqmlGflagEnableQmlDebug
 
 -- | Sets or clears one of the application flags used by Qt and returns True
 -- if successful. If the flag or flag value is not supported then it will

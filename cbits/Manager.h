@@ -92,6 +92,7 @@ private:
     HsQMLTrivialCb mJobsCb;
     HsQMLTrivialCb mYieldCb;
     HsQMLEngine* mActiveEngine;
+    bool mQmlDebugEnabled;
 };
 
 class HsQMLManagerApp : public QObject

@@ -4,6 +4,12 @@
 #include <QtCore/QMetaType>
 #include <QtCore/QMutexLocker>
 #include <QtCore/QThread>
+#include <QtQml/QQmlDebuggingEnabler>
+#include <QtCore/QDebug>
+#include <QtCore/QProcessEnvironment>
+#include <QtCore/QLoggingCategory>
+#include <QtNetwork/QTcpServer>
+#include <QtNetwork/QTcpSocket>
 #ifdef Q_OS_MAC
 #include <pthread.h>
 #endif
@@ -15,6 +21,9 @@
 #include "Manager.h"
 #include "Model.h"
 #include "Object.h"
+
+// Enable QML debugging globally before any Qt initialization
+static QQmlDebuggingEnabler debuggingEnabler(true);
 
 // Declarations for part of Qt's internal API
 Q_DECL_IMPORT const QVariant::Handler* qcoreVariantHandler();
@@ -88,6 +97,7 @@ HsQMLManager::HsQMLManager(
     , mJobsCb(NULL)
     , mYieldCb(NULL)
     , mActiveEngine(NULL)
+    , mQmlDebugEnabled(false)
 {
     // Set default Qt args
     setArgs(QStringList("HsQML"));
@@ -145,9 +155,17 @@ bool HsQMLManager::setArgs(const QStringList& args)
     }
 
     mArgs.clear();
-    mArgs.reserve(args.size());
+    mArgs.reserve(args.size() + 2);  // Add space for debug arguments
     mArgsPtrs.clear();
-    mArgsPtrs.reserve(args.size());
+    mArgsPtrs.reserve(args.size() + 2);
+
+    // Add QML debugging arguments
+    mArgs << "-qmljsdebugger";
+    mArgs << "port:3768,block=true";
+    mArgsPtrs << mArgs[mArgs.size()-2].data();
+    mArgsPtrs << mArgs[mArgs.size()-1].data();
+
+    // Add original arguments
     Q_FOREACH(const QString& arg, args) {
         mArgs << arg.toLocal8Bit(); 
         mArgsPtrs << mArgs.last().data();
@@ -172,6 +190,9 @@ bool HsQMLManager::setFlag(HsQMLGlobalFlag flag, bool value)
         QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts, value);
         return true;
 #endif
+    case HSQML_GFLAG_ENABLE_QML_DEBUG:
+        mQmlDebugEnabled = value;
+        return true;
     }
     return false;
 }
@@ -183,6 +204,8 @@ bool HsQMLManager::getFlag(HsQMLGlobalFlag flag)
     case HSQML_GFLAG_SHARE_OPENGL_CONTEXTS:
         return QCoreApplication::testAttribute(Qt::AA_ShareOpenGLContexts);
 #endif
+    case HSQML_GFLAG_ENABLE_QML_DEBUG:
+        return mQmlDebugEnabled;
     }
     return false;
 }
@@ -417,7 +440,37 @@ HsQMLManagerApp::HsQMLManagerApp()
     , mArgC(gManager->argsPtrs().size())
     , mApp(mArgC, gManager->argsPtrs().data())
 {
-    gManager->argsPtrs().resize(mArgC);
+    qDebug() << "Application arguments:";
+    for (int i = 0; i < mArgC; ++i) {
+        qDebug() << i << ":" << gManager->argsPtrs()[i];
+    }
+
+    // Only enable debugging if the flag is set
+    if (gManager->getFlag(HSQML_GFLAG_ENABLE_QML_DEBUG)) {
+        QQmlDebuggingEnabler enabler(true);
+
+        const QString configString = QString::fromLatin1("port:3768,block=true");
+
+        bool debugServerStarted = QQmlDebuggingEnabler::startTcpDebugServer(
+            3768,
+            QQmlDebuggingEnabler::WaitForClient,
+            configString
+        );
+
+        qDebug() << "QML debugging server started:" << (debugServerStarted ? "yes" : "no")
+                 << "with config:" << configString;
+
+        // Check if the port is available
+        QTcpServer server;
+        if (!server.listen(QHostAddress::LocalHost, 3768)) {
+            qDebug() << "Debug port 3768 is not available:" << server.errorString();
+            qDebug() << "Port might be in use. Try: lsof -i :3768";
+        } else {
+            server.close();
+            qDebug() << "Debug port 3768 is available";
+        }
+    }
+
     mApp.setQuitOnLastWindowClosed(false);
 
     // Install hooked handler for QVariants
@@ -507,6 +560,22 @@ extern "C" void hsqml_init(
     void (*freeStable)(HsStablePtr))
 {
     if (gManager == NULL) {
+        // Enable verbose Qt debugging with all relevant categories
+        QLoggingCategory::setFilterRules(
+            "qt.qml.debug=true\n"
+            "qt.qml.connections=true\n"
+            "qt.qml.network=true\n"
+            "qt.qml.compiler=true\n"
+            "qt.qml.debugger=true\n"
+            "qt.qml.engine=true"
+        );
+
+        qputenv("QML_DEBUG", "1");
+        qputenv("QTQML_ENABLE_DEBUGGING", "1");
+        qputenv("QML_DEBUG_BLOCK", "true");
+        qputenv("QML_WAIT_FOR_DEBUGGER", "1");
+        qputenv("QV4_ENABLE_BLOCKING_DEBUGGER", "1");
+
         HsQMLManager* manager = new HsQMLManager(freeFun, freeStable);
         if (!gManager.testAndSetOrdered(NULL, manager)) {
             delete manager;

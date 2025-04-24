@@ -198,6 +198,7 @@ extern void hsqml_get_args(HsQMLStringHandle**);
 
 typedef enum {
     HSQML_GFLAG_SHARE_OPENGL_CONTEXTS,
+    HSQML_GFLAG_ENABLE_QML_DEBUG,
 } HsQMLGlobalFlag;
 
 extern int hsqml_set_flag(HsQMLGlobalFlag, int);
