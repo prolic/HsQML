@@ -4,6 +4,6 @@ HsQMLClipboardHelper::HsQMLClipboardHelper(QObject *parent)
     : QObject(parent) {}
 
 void HsQMLClipboardHelper::copyText(const QString &text) {
-    QClipboard *clipboard = QApplication::clipboard();
+    QClipboard *clipboard = QGuiApplication::clipboard();
     clipboard->setText(text);
 }

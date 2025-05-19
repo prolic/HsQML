@@ -1,9 +1,9 @@
 #ifndef CLIPBOARDHELPER_H
 #define CLIPBOARDHELPER_H
 
-#include <QApplication>
-#include <QClipboard>
-#include <QObject>
+#include <QtGui/QGuiApplication>
+#include <QtGui/QClipboard>
+#include <QtCore/QObject>
 
 class HsQMLClipboardHelper : public QObject {
     Q_OBJECT
