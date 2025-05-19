@@ -87,6 +87,7 @@ Library
         cbits/Class.cpp
         cbits/ClipboardHelper.cpp
         cbits/Engine.cpp
+        cbits/HighDpiScaling.cpp
         cbits/Intrinsics.cpp
         cbits/Manager.cpp
         cbits/Model.cpp
@@ -96,6 +97,7 @@ Library
         cbits/Canvas.h
         cbits/ClipboardHelper.h
         cbits/Engine.h
+        cbits/HighDpiScaling.h
         cbits/Manager.h
         cbits/Model.h
     CC-options: --std=c++11

@@ -22,6 +22,7 @@ module Graphics.QML.Engine (
   runEngineLoop,
   joinEngine,
   killEngine,
+  enableHighDpiScaling,
 
   -- * Event Loop
   RunQML(),
@@ -83,6 +84,8 @@ data EngineConfig = EngineConfig {
 }
 
 foreign import ccall "hsqml_set_window_icon" setWindowIcon :: Ptr CChar -> IO ()
+
+foreign import ccall "hsqml_enable_high_dpi_scaling" enableHighDpiScaling :: IO ()
 
 
 -- | Default engine configuration. Loads @\"main.qml\"@ from the current
