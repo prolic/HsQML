@@ -12,6 +12,7 @@ import Graphics.QML.Internal.BindObj
 
 import Prelude hiding (catch)
 import Control.Exception (SomeException(SomeException), catch)
+import Control.Monad (when)
 import Control.Monad.Trans.Maybe
 import Data.Maybe
 import Data.Tagged
@@ -22,10 +23,11 @@ type ErrIO a = MaybeT IO a
 
 runErrIO :: ErrIO a -> IO ()
 runErrIO m = do
-  r <- catch (runMaybeT m) $ \(SomeException _) -> return Nothing
-  if isNothing r
-  then hPutStrLn stderr "Warning: Marshalling error."
-  else return ()
+  r <- catch (runMaybeT m) $ \(e :: SomeException) -> do
+    hPutStrLn stderr $ "Warning: Marshalling error: " ++ show e
+    return Nothing
+  when (isNothing r) $
+    hPutStrLn stderr "Warning: Marshalling error (see above for details)."
 
 errIO :: IO a -> ErrIO a
 errIO = MaybeT . fmap Just
