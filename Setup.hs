@@ -14,6 +14,7 @@ import Distribution.Simple.BuildPaths
 import Distribution.Simple.Compiler
 import Distribution.Simple.LocalBuildInfo
 import Distribution.Simple.Program
+import Distribution.Simple.Program.Ar
 import Distribution.Simple.Program.Ld
 import Distribution.Simple.Register
 import Distribution.Simple.Setup
@@ -26,6 +27,7 @@ import Distribution.Verbosity
 
 import System.Environment
 import System.FilePath
+import System.Info (os)
 
 import Text.Read (readMaybe)
 
@@ -182,8 +184,12 @@ buildGHCiFix verb pkgDesc lbi lib =
         lname  = getHSLibraryName $ componentUnitId clbi
     stubObjs <- fmap catMaybes $
       mapM (findFileWithExtension ["o"] [bDir]) $ map (++ "_stub") ms
-    (ld,_) <- requireProgram verb ldProgram (withPrograms lbi)
-    combineObjectFiles verb lbi ld (bDir </> lname <.> "o") (stubObjs ++ hsObjs)
+    case os of
+      "mingw32" -> do
+        createArLibArchive verb lbi (bDir </> lname <.> "a") (stubObjs ++ hsObjs)
+      _ -> do
+        (ld,_) <- requireProgram verb ldProgram (withPrograms lbi)
+        combineObjectFiles verb lbi ld (bDir </> lname <.> "o") (stubObjs ++ hsObjs)
     (ghc,_) <- requireProgram verb ghcProgram (withPrograms lbi)
     let bi = libBuildInfo lib
     runProgram verb ghc (
