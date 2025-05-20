@@ -549,22 +549,6 @@ extern "C" void hsqml_init(
     void (*freeStable)(HsStablePtr))
 {
     if (gManager == NULL) {
-        // Enable verbose Qt debugging with all relevant categories
-        QLoggingCategory::setFilterRules(
-            "qt.qml.debug=true\n"
-            "qt.qml.connections=true\n"
-            "qt.qml.network=true\n"
-            "qt.qml.compiler=true\n"
-            "qt.qml.debugger=true\n"
-            "qt.qml.engine=true"
-        );
-
-        qputenv("QML_DEBUG", "1");
-        qputenv("QTQML_ENABLE_DEBUGGING", "1");
-        qputenv("QML_DEBUG_BLOCK", "true");
-        qputenv("QML_WAIT_FOR_DEBUGGER", "1");
-        qputenv("QV4_ENABLE_BLOCKING_DEBUGGER", "1");
-
         HsQMLManager* manager = new HsQMLManager(freeFun, freeStable);
         if (!gManager.testAndSetOrdered(NULL, manager)) {
             delete manager;
