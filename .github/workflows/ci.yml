@@ -49,6 +49,7 @@ jobs:
 
     - name: Install Qt dependencies (Windows)
       if: runner.os == 'Windows'
+      shell: msys2 {0}
       run: |
         pacman -S --noconfirm mingw-w64-x86_64-qt5-base mingw-w64-x86_64-qt5-declarative mingw-w64-x86_64-qt5-graphicaleffects mingw-w64-x86_64-qt5-imageformats mingw-w64-x86_64-qt5-multimedia mingw-w64-x86_64-qt5-quickcontrols2 mingw-w64-x86_64-qt5-svg mingw-w64-x86_64-qt5-tools mingw-w64-x86_64-qt5-translations mingw-w64-x86_64-qt5-winextras mingw-w64-x86_64-angleproject
 
@@ -60,25 +61,32 @@ jobs:
         Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
 
     - name: Configure
+      shell: ${{ runner.os == 'Windows' && 'msys2 {0}' || 'bash' }}
       run: cabal configure --enable-tests --enable-benchmarks -v2
 
     - name: Build
+      shell: ${{ runner.os == 'Windows' && 'msys2 {0}' || 'bash' }}
       run: cabal build
 
     - name: Test
+      shell: ${{ runner.os == 'Windows' && 'msys2 {0}' || 'bash' }}
       run: cabal test
 
     - name: Check
+      shell: ${{ runner.os == 'Windows' && 'msys2 {0}' || 'bash' }}
       run: cabal check
 
     - name: Create source distribution
+      shell: ${{ runner.os == 'Windows' && 'msys2 {0}' || 'bash' }}
       run: cabal sdist
 
     - name: Verify source distribution
+      shell: ${{ runner.os == 'Windows' && 'msys2 {0}' || 'bash' }}
       run: |
         SRC_TGZ=$(cabal info . | awk '{print $2;exit}').tar.gz
         cd dist
         cabal install --force-reinstalls "$SRC_TGZ"
 
     - name: Test GHCi
+      shell: ${{ runner.os == 'Windows' && 'msys2 {0}' || 'bash' }}
       run: echo 'do {Graphics.QML.Debug.setDebugLogLevel 0; putStrLn "OK"}' | ghci | grep OK
