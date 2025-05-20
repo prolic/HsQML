@@ -40,7 +40,7 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install -y qt5-default qtdeclarative5-dev qtdeclarative5-qtquick2-plugin qtdeclarative5-window-plugin
+        sudo apt-get install -y qtdeclarative5-dev qml-module-qtquick-controls2 libqt5quick5 qt5-image-formats-plugins qtmultimedia5-dev qml-module-qtmultimedia qttools5-dev-tools qtbase5-dev
 
     - name: Install Qt dependencies (macOS)
       if: runner.os == 'macOS'
@@ -50,7 +50,7 @@ jobs:
     - name: Install Qt dependencies (Windows)
       if: runner.os == 'Windows'
       run: |
-        pacman -S --noconfirm mingw-w64-x86_64-qt5 mingw-w64-x86_64-qt5-declarative mingw-w64-x86_64-qt5-quickcontrols2
+        pacman -S --noconfirm mingw-w64-x86_64-qt5-base mingw-w64-x86_64-qt5-declarative mingw-w64-x86_64-qt5-graphicaleffects mingw-w64-x86_64-qt5-imageformats mingw-w64-x86_64-qt5-multimedia mingw-w64-x86_64-qt5-quickcontrols2 mingw-w64-x86_64-qt5-svg mingw-w64-x86_64-qt5-tools mingw-w64-x86_64-qt5-translations mingw-w64-x86_64-qt5-winextras mingw-w64-x86_64-angleproject
 
     - name: Setup Xvfb (Linux only)
       if: runner.os == 'Linux'
