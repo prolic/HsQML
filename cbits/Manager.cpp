@@ -155,17 +155,9 @@ bool HsQMLManager::setArgs(const QStringList& args)
     }
 
     mArgs.clear();
-    mArgs.reserve(args.size() + 2);  // Add space for debug arguments
+    mArgs.reserve(args.size());
     mArgsPtrs.clear();
-    mArgsPtrs.reserve(args.size() + 2);
-
-    // Add QML debugging arguments
-    mArgs << "-qmljsdebugger";
-    mArgs << "port:3768,block=true";
-    mArgsPtrs << mArgs[mArgs.size()-2].data();
-    mArgsPtrs << mArgs[mArgs.size()-1].data();
-
-    // Add original arguments
+    mArgsPtrs.reserve(args.size());
     Q_FOREACH(const QString& arg, args) {
         mArgs << arg.toLocal8Bit(); 
         mArgsPtrs << mArgs.last().data();
@@ -440,10 +432,7 @@ HsQMLManagerApp::HsQMLManagerApp()
     , mArgC(gManager->argsPtrs().size())
     , mApp(mArgC, gManager->argsPtrs().data())
 {
-    qDebug() << "Application arguments:";
-    for (int i = 0; i < mArgC; ++i) {
-        qDebug() << i << ":" << gManager->argsPtrs()[i];
-    }
+    gManager->argsPtrs().resize(mArgC);
 
     // Only enable debugging if the flag is set
     if (gManager->getFlag(HSQML_GFLAG_ENABLE_QML_DEBUG)) {
