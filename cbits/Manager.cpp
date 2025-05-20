@@ -22,9 +22,6 @@
 #include "Model.h"
 #include "Object.h"
 
-// Enable QML debugging globally before any Qt initialization
-static QQmlDebuggingEnabler debuggingEnabler(true);
-
 // Declarations for part of Qt's internal API
 Q_DECL_IMPORT const QVariant::Handler* qcoreVariantHandler();
 namespace QVariantPrivate {
