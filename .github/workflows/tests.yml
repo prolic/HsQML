@@ -26,7 +26,9 @@ jobs:
     needs: generate-matrix
     runs-on: ${{ matrix.os }}
     strategy:
-      matrix: ${{ fromJSON(needs.generate-matrix.outputs.matrix) }}
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        include: ${{ fromJSON(needs.generate-matrix.outputs.matrix) }}
     steps:
       - name: Checkout base repo
         uses: actions/checkout@v4
@@ -52,7 +54,32 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-ghc-${{ matrix.ghc }}-cabal-
 
-      - name: Install Qt5 Dependencies
+      - name: Setup MSYS2 (Windows)
+        if: runner.os == 'Windows'
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            base
+            mingw-w64-x86_64-toolchain
+            git
+
+      - name: Install Build Tools (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          pacman -Syu
+          pacman -S --noconfirm autoconf autogen automake libtool gcc git mingw-w64-x86_64-libunwind mingw-w64-x86_64-toolchain mingw-w64-x86_64-make mingw-w64-x86_64-cmake mingw-w64-x86_64-autotools mingw-w64-x86_64-pkg-config
+
+      - name: Install Qt5 Dependencies (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          pacman -S --noconfirm mingw-w64-x86_64-qt5-base mingw-w64-x86_64-qt5-declarative mingw-w64-x86_64-qt5-graphicaleffects mingw-w64-x86_64-qt5-imageformats mingw-w64-x86_64-qt5-multimedia mingw-w64-x86_64-qt5-quickcontrols2 mingw-w64-x86_64-qt5-svg mingw-w64-x86_64-qt5-tools mingw-w64-x86_64-qt5-translations mingw-w64-x86_64-qt5-winextras mingw-w64-x86_64-angleproject
+
+      - name: Install Qt5 Dependencies (Linux)
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y \
@@ -68,13 +95,32 @@ jobs:
             qtbase5-dev \
             xvfb
 
-      - name: Start Xvfb
+      - name: Start Xvfb (Linux)
+        if: runner.os == 'Linux'
         run: |
           Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
           echo "DISPLAY=:99" >> $GITHUB_ENV
 
-      - name: Build
+      - name: Build (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          export PATH="/c/ghcup/bin:/mingw64/bin:$PATH"
+          export PKG_CONFIG_PATH="/mingw64/lib/pkgconfig"
+          cabal build --enable-tests
+
+      - name: Build (Linux)
+        if: runner.os == 'Linux'
         run: cabal build --enable-tests
 
-      - name: Test
+      - name: Test (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          export PATH="/c/ghcup/bin:/mingw64/bin:$PATH"
+          export PKG_CONFIG_PATH="/mingw64/lib/pkgconfig"
+          cabal run hsqml-test1 --enable-tests
+
+      - name: Test (Linux)
+        if: runner.os == 'Linux'
         run: cabal run hsqml-test1 --enable-tests
