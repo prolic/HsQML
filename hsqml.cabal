@@ -107,7 +107,7 @@ Library
         Graphics.QML.Internal.Objects
         Graphics.QML.Internal.Types
     Hs-source-dirs: src
-    Cxx-sources:
+    C-sources:
         cbits/Canvas.cpp
         cbits/Class.cpp
         cbits/ClipboardHelper.cpp
@@ -125,17 +125,15 @@ Library
         cbits/HighDpiScaling.h
         cbits/Manager.h
         cbits/Model.h
-    Cxx-options: --std=c++11
-    if os(windows)
-        Cxx-options: -DQT_STATICPLUGIN
+    CC-options: --std=c++11
     X-separate-cbits: True
     build-tool-depends: c2hs:c2hs
     if flag(ForceGHCiLib)
         X-force-ghci-lib: True
     if flag(UseExitHook)
-        Cxx-options: -DHSQML_USE_EXIT_HOOK
+        CC-options: -DHSQML_USE_EXIT_HOOK
     if flag(EnableQmlDebugging)
-        Cxx-options: -DQT_QML_DEBUG_NO_WARNING
+        CC-options: -DQT_QML_DEBUG_NO_WARNING
     if os(windows) && !flag(UsePkgConfig)
         Include-dirs: /QT_ROOT/include
         Extra-libraries:
@@ -146,9 +144,11 @@ Library
             GHC-options: -optc-fno-asynchronous-unwind-tables
     else
         if os(darwin) && !flag(UsePkgConfig)
-            Frameworks: QtCore QtGui QtWidgets QtQml QtQuick QtNetwork
-            Cxx-options: -F /QT_ROOT/lib
-            Extra-framework-dirs: /QT_ROOT/lib
+            Frameworks: QtCore QtGui QtWidgets QtQml QtQuick
+            CC-options: -F /QT_ROOT/lib
+            GHC-options: -hide-option-framework-path /QT_ROOT/lib
+            GHC-shared-options: -hide-option-framework-path /QT_ROOT/lib
+            X-framework-dirs: /QT_ROOT/lib
         else
             Pkgconfig-depends:
                 Qt5Core    >= 5.0 && < 6.0,
