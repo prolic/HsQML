@@ -1,49 +1,49 @@
 build: off
 
-clone_folder: C:\projects\hsqml
-
-before_test:
-  # http://help.appveyor.com/discussions/problems/6312-curl-command-not-found
-  - set PATH=C:\Program Files\Git\mingw64\bin;%PATH%
-  - curl -sS -ostack.zip -L --insecure http://www.stackage.org/stack/windows-i386
-  - 7z x stack.zip stack.exe
-
 environment:
-  global:
-    STACK_ROOT: "c:\\sr"
-    # Override the temp directory to avoid sed escaping issues
-    TMP: "c:\\tmp"
-
   matrix:
     - GHCVER: 9.4.8
     - GHCVER: 9.6.7
 
 install:
-  - C:\tools\msys64\usr\bin\bash.exe -lc "pacman -Syu --noconfirm"
-  - C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm \
-      autoconf \
-      autogen \
-      automake \
-      libtool \
-      gcc \
-      git \
-      mingw-w64-x86_64-libunwind \
-      mingw-w64-x86_64-toolchain \
-      mingw-w64-x86_64-make \
-      mingw-w64-x86_64-cmake \
-      mingw-w64-x86_64-autotools \
-      mingw-w64-x86_64-pkg-config \
-      mingw-w64-x86_64-qt5-base \
-      mingw-w64-x86_64-qt5-declarative \
-      mingw-w64-x86_64-qt5-graphicaleffects \
-      mingw-w64-x86_64-qt5-imageformats \
-      mingw-w64-x86_64-qt5-multimedia \
-      mingw-w64-x86_64-qt5-quickcontrols2 \
-      mingw-w64-x86_64-qt5-svg \
-      mingw-w64-x86_64-qt5-tools \
-      mingw-w64-x86_64-qt5-translations \
-      mingw-w64-x86_64-qt5-winextras \
-      mingw-w64-x86_64-angleproject"
+  - ps: |
+      # Install MSYS2
+      choco install msys2
+      refreshenv
+      Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
+      refreshenv
+
+      # Install Haskell
+      choco install haskell-dev
+      refreshenv
+      $env:Path = "C:\tools\ghc-$env:GHCVER\bin;C:\ghcup\bin;$env:Path"
+
+      # Install MSYS2 packages
+      C:\tools\msys64\usr\bin\bash.exe -lc "pacman -Syu --noconfirm"
+      C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm \
+        autoconf \
+        autogen \
+        automake \
+        libtool \
+        gcc \
+        git \
+        mingw-w64-x86_64-libunwind \
+        mingw-w64-x86_64-toolchain \
+        mingw-w64-x86_64-make \
+        mingw-w64-x86_64-cmake \
+        mingw-w64-x86_64-autotools \
+        mingw-w64-x86_64-pkg-config \
+        mingw-w64-x86_64-qt5-base \
+        mingw-w64-x86_64-qt5-declarative \
+        mingw-w64-x86_64-qt5-graphicaleffects \
+        mingw-w64-x86_64-qt5-imageformats \
+        mingw-w64-x86_64-qt5-multimedia \
+        mingw-w64-x86_64-qt5-quickcontrols2 \
+        mingw-w64-x86_64-qt5-svg \
+        mingw-w64-x86_64-qt5-tools \
+        mingw-w64-x86_64-qt5-translations \
+        mingw-w64-x86_64-qt5-winextras \
+        mingw-w64-x86_64-angleproject"
 
 test_script:
   - ps: |
