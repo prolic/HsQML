@@ -17,20 +17,19 @@ install:
       C:\tools\msys64\usr\bin\bash.exe -lc "pacman -Syu --noconfirm"
       C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm mingw-w64-x86_64-qt5-base mingw-w64-x86_64-qt5-declarative mingw-w64-x86_64-qt5-graphicaleffects mingw-w64-x86_64-qt5-imageformats mingw-w64-x86_64-qt5-multimedia mingw-w64-x86_64-qt5-quickcontrols2 mingw-w64-x86_64-qt5-svg mingw-w64-x86_64-qt5-tools mingw-w64-x86_64-qt5-translations mingw-w64-x86_64-qt5-winextras mingw-w64-x86_64-angleproject"
       cabal update
-      cabal install --only-dependencies --enable-tests
+      cabal configure --enable-tests
 
 build_script:
   - ps: |
       $env:Path = "C:\tools\ghc-$env:GHCVER\bin;C:\ghcup\bin;C:\tools\msys64\mingw64\bin;$env:Path"
       $env:PKG_CONFIG_PATH = "C:\tools\msys64\mingw64\lib\pkgconfig"
-      cabal configure --enable-tests
-      cabal build all
+      cabal build --enable-tests
 
 test_script:
   - ps: |
       $env:Path = "C:\tools\ghc-$env:GHCVER\bin;C:\ghcup\bin;C:\tools\msys64\mingw64\bin;$env:Path"
       $env:PKG_CONFIG_PATH = "C:\tools\msys64\mingw64\lib\pkgconfig"
-      cabal run hsqml-test1 --enable-tests
+      cabal run hsqml-test1
 
 cache:
   - C:\Users\appveyor\AppData\Roaming\cabal\store
