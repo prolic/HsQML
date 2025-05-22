@@ -107,7 +107,7 @@ Library
         Graphics.QML.Internal.Objects
         Graphics.QML.Internal.Types
     Hs-source-dirs: src
-    C-sources:
+    Cxx-sources:
         cbits/Canvas.cpp
         cbits/Class.cpp
         cbits/ClipboardHelper.cpp
@@ -125,15 +125,15 @@ Library
         cbits/HighDpiScaling.h
         cbits/Manager.h
         cbits/Model.h
-    CC-options: --std=c++11
+    Cxx-options: --std=c++11
     X-separate-cbits: True
     build-tool-depends: c2hs:c2hs
     if flag(ForceGHCiLib)
         X-force-ghci-lib: True
     if flag(UseExitHook)
-        CC-options: -DHSQML_USE_EXIT_HOOK
+        Cxx-options: -DHSQML_USE_EXIT_HOOK
     if flag(EnableQmlDebugging)
-        CC-options: -DQT_QML_DEBUG_NO_WARNING
+        Cxx-options: -DQT_QML_DEBUG_NO_WARNING
     if os(windows) && !flag(UsePkgConfig)
         Include-dirs: /QT_ROOT/include
         Extra-libraries:
@@ -145,7 +145,7 @@ Library
     else
         if os(darwin) && !flag(UsePkgConfig)
             Frameworks: QtCore QtGui QtWidgets QtQml QtQuick QtNetwork
-            CC-options: -F /QT_ROOT/lib
+            Cxx-options: -F /QT_ROOT/lib
             Extra-framework-dirs: /QT_ROOT/lib
         else
             Pkgconfig-depends:
