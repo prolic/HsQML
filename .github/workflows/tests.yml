@@ -129,8 +129,7 @@ jobs:
         run: |
           export PATH="/c/tools/ghc-${{ matrix.ghc }}/bin:/c/ghcup/bin:/mingw64/bin:$PATH"
           export PKG_CONFIG_PATH=/mingw64/lib/pkgconfig
-          export EXTRA_LDFLAGS="-lQt5Network"
-          cabal build --extra-lib-dirs=/mingw64/lib --extra-include-dirs=/mingw64/include --ghc-options="-lQt5Network" --enable-tests
+          cabal build --enable-tests
 
       - name: Build (Linux)
         if: runner.os == 'Linux'
@@ -142,8 +141,7 @@ jobs:
         run: |
           export PATH="/c/tools/ghc-${{ matrix.ghc }}/bin:/c/ghcup/bin:/mingw64/bin:$PATH"
           export PKG_CONFIG_PATH=/mingw64/lib/pkgconfig
-          export EXTRA_LDFLAGS="-lQt5Network"
-          cabal run hsqml-test1 --extra-lib-dirs=/mingw64/lib --extra-include-dirs=/mingw64/include --ghc-options="-lQt5Network" --enable-tests
+          cabal run hsqml-test1 --enable-tests
 
       - name: Test (Linux)
         if: runner.os == 'Linux'
