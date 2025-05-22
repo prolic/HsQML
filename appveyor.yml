@@ -1,0 +1,33 @@
+version: 1.0.{build}
+
+environment:
+  matrix:
+    - GHCVER: 9.4.8
+    - GHCVER: 9.6.6
+
+install:
+  - ps: |
+      choco install haskell-dev
+      choco install msys2
+      refreshenv
+      choco install qt5
+      refreshenv
+      $env:Path = "C:\tools\ghc-$env:GHCVER\bin;C:\ghcup\bin;$env:Path"
+      cabal update
+      cabal install --only-dependencies --enable-tests
+
+build_script:
+  - ps: |
+      $env:Path = "C:\tools\ghc-$env:GHCVER\bin;C:\ghcup\bin;$env:Path"
+      cabal configure --enable-tests
+      cabal build --enable-tests
+
+test_script:
+  - ps: |
+      $env:Path = "C:\tools\ghc-$env:GHCVER\bin;C:\ghcup\bin;$env:Path"
+      $env:QT_QPA_PLATFORM = "windows"
+      cabal run hsqml-test1 --enable-tests
+
+cache:
+  - C:\Users\appveyor\AppData\Roaming\cabal\store
+  - dist-newstyle 
