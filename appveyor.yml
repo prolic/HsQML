@@ -1,53 +1,49 @@
-version: 1.0.{build}
+build: off
+
+before_test:
+  # http://help.appveyor.com/discussions/problems/6312-curl-command-not-found
+  - set PATH=C:\Program Files\Git\mingw64\bin;%PATH%
+  - curl -sS -ostack.zip -L --insecure http://www.stackage.org/stack/windows-i386
+  - 7z x stack.zip stack.exe
+
+clone_folder: "c:\\stack"
 
 environment:
-  GHCUP_NONINTERACTIVE: "1"
-  GHCUP_INSTALL_ONLY: "1"
-  GHCUP_NO_ANALYTICS: "1"
-  GHCUP_USE_XDG_DIRS: "1"
-  GHCUP_DEFAULT_TOOLCHAIN: "ghc-9.6.7"
-  BOOTSTRAP_HASKELL_GHC_VERSION: "9.6.7"
-  BOOTSTRAP_HASKELL_CABAL_VERSION: "3.10.3.0"
+  global:
+    STACK_ROOT: "c:\\sr"
+    # Override the temp directory to avoid sed escaping issues
+    TMP: "c:\\tmp"
+
+  matrix:
+    - GHCVER: 9.4.8
+    - GHCVER: 9.6.7
 
 install:
-  - ps: |
-      Set-ExecutionPolicy Bypass -Scope Process -Force
-      [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-      Invoke-WebRequest https://www.haskell.org/ghcup/sh/bootstrap-haskell.ps1 -UseBasicParsing -OutFile bootstrap.ps1
-      powershell -NoProfile -ExecutionPolicy Bypass -File .\bootstrap.ps1 -DisableCurl -NonInteractive
-
-      C:\tools\msys64\usr\bin\bash.exe -lc "pacman -Syu --noconfirm"
-      C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm \
-        autoconf \
-        autogen \
-        automake \
-        libtool \
-        gcc \
-        git \
-        mingw-w64-x86_64-libunwind \
-        mingw-w64-x86_64-toolchain \
-        mingw-w64-x86_64-make \
-        mingw-w64-x86_64-cmake \
-        mingw-w64-x86_64-autotools \
-        mingw-w64-x86_64-pkg-config \
-        mingw-w64-x86_64-qt5-base \
-        mingw-w64-x86_64-qt5-declarative \
-        mingw-w64-x86_64-qt5-graphicaleffects \
-        mingw-w64-x86_64-qt5-imageformats \
-        mingw-w64-x86_64-qt5-multimedia \
-        mingw-w64-x86_64-qt5-quickcontrols2 \
-        mingw-w64-x86_64-qt5-svg \
-        mingw-w64-x86_64-qt5-tools \
-        mingw-w64-x86_64-qt5-translations \
-        mingw-w64-x86_64-qt5-winextras \
-        mingw-w64-x86_64-angleproject"
-      cabal configure --enable-tests
-
-build_script:
-  - ps: |
-      $env:Path = "C:\tools\ghc-$env:GHCVER\bin;C:\ghcup\bin;C:\tools\msys64\mingw64\bin;$env:Path"
-      $env:PKG_CONFIG_PATH = "C:\tools\msys64\mingw64\lib\pkgconfig"
-      C:\tools\msys64\usr\bin\bash.exe -lc "cabal build --enable-tests"
+  - C:\tools\msys64\usr\bin\bash.exe -lc "pacman -Syu --noconfirm"
+  - C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm \
+      autoconf \
+      autogen \
+      automake \
+      libtool \
+      gcc \
+      git \
+      mingw-w64-x86_64-libunwind \
+      mingw-w64-x86_64-toolchain \
+      mingw-w64-x86_64-make \
+      mingw-w64-x86_64-cmake \
+      mingw-w64-x86_64-autotools \
+      mingw-w64-x86_64-pkg-config \
+      mingw-w64-x86_64-qt5-base \
+      mingw-w64-x86_64-qt5-declarative \
+      mingw-w64-x86_64-qt5-graphicaleffects \
+      mingw-w64-x86_64-qt5-imageformats \
+      mingw-w64-x86_64-qt5-multimedia \
+      mingw-w64-x86_64-qt5-quickcontrols2 \
+      mingw-w64-x86_64-qt5-svg \
+      mingw-w64-x86_64-qt5-tools \
+      mingw-w64-x86_64-qt5-translations \
+      mingw-w64-x86_64-qt5-winextras \
+      mingw-w64-x86_64-angleproject"
 
 test_script:
   - ps: |
