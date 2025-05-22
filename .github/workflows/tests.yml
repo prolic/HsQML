@@ -104,14 +104,17 @@ jobs:
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
-          echo "Looking for cabal:"
-          find /c -name cabal.exe 2>/dev/null || echo "Not found in /c"
+          export PATH="/c/ghcup/bin:/mingw64/bin:$PATH"
+          export PKG_CONFIG_PATH=/mingw64/lib/pkgconfig
           echo "Listing /c/ghcup directory:"
-          ls -la /c/ghcup
+          ls -la /c/ghcup || echo "Directory not found"
           echo "Listing /c/ghcup/bin directory:"
           ls -la /c/ghcup/bin || echo "Directory not found"
-          echo "Current PATH:"
-          echo $PATH
+          echo "Checking setup output paths:"
+          echo "GHC path: ${{ steps.setup-haskell.outputs.ghc-path }}"
+          echo "Cabal path: ${{ steps.setup-haskell.outputs.cabal-path }}"
+          echo "Cabal exe: ${{ steps.setup-haskell.outputs.cabal-exe }}"
+          which cabal || echo "Cabal not in PATH"
 
       - name: Build (Windows)
         if: runner.os == 'Windows'
