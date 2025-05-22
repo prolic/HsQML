@@ -98,7 +98,6 @@ jobs:
             mingw-w64-x86_64-qt5-tools \
             mingw-w64-x86_64-qt5-translations \
             mingw-w64-x86_64-qt5-winextras \
-            mingw-w64-x86_64-qt5-network \
             mingw-w64-x86_64-angleproject
 
       - name: Install Qt5 Dependencies (Linux)
@@ -130,7 +129,8 @@ jobs:
         run: |
           export PATH="/c/tools/ghc-${{ matrix.ghc }}/bin:/c/ghcup/bin:/mingw64/bin:$PATH"
           export PKG_CONFIG_PATH=/mingw64/lib/pkgconfig
-          cabal build --enable-tests
+          export EXTRA_LDFLAGS="-lQt5Network"
+          cabal build --extra-lib-dirs=/mingw64/lib --extra-include-dirs=/mingw64/include --ghc-options="-lQt5Network" --enable-tests
 
       - name: Build (Linux)
         if: runner.os == 'Linux'
@@ -142,7 +142,8 @@ jobs:
         run: |
           export PATH="/c/tools/ghc-${{ matrix.ghc }}/bin:/c/ghcup/bin:/mingw64/bin:$PATH"
           export PKG_CONFIG_PATH=/mingw64/lib/pkgconfig
-          cabal run hsqml-test1 --enable-tests
+          export EXTRA_LDFLAGS="-lQt5Network"
+          cabal run hsqml-test1 --extra-lib-dirs=/mingw64/lib --extra-include-dirs=/mingw64/include --ghc-options="-lQt5Network" --enable-tests
 
       - name: Test (Linux)
         if: runner.os == 'Linux'
