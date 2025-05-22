@@ -34,7 +34,7 @@ jobs:
 
       - name: Set up Haskell
         id: setup-haskell
-        uses: haskell-actions/setup@v2
+        uses: haskell-actions/setup@v2.8
         with:
           ghc-version: ${{ matrix.ghc }}
           cabal-version: 'latest'
@@ -100,11 +100,24 @@ jobs:
           Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
           echo "DISPLAY=:99" >> $GITHUB_ENV
 
+      - name: Debug Windows Paths (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          echo "Looking for cabal:"
+          find /c -name cabal.exe 2>/dev/null || echo "Not found in /c"
+          echo "Listing /c/ghcup directory:"
+          ls -la /c/ghcup
+          echo "Listing /c/ghcup/bin directory:"
+          ls -la /c/ghcup/bin || echo "Directory not found"
+          echo "Current PATH:"
+          echo $PATH
+
       - name: Build (Windows)
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
-          export PATH="${{ steps.setup-haskell.outputs.ghc-path }}:${{ steps.setup-haskell.outputs.cabal-path }}:/mingw64/bin:$PATH"
+          export PATH="/c/ghcup/bin:/mingw64/bin:$PATH"
           export PKG_CONFIG_PATH=/mingw64/lib/pkgconfig
           cabal build --enable-tests
 
@@ -116,7 +129,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
-          export PATH="${{ steps.setup-haskell.outputs.ghc-path }}:${{ steps.setup-haskell.outputs.cabal-path }}:/mingw64/bin:$PATH"
+          export PATH="/c/ghcup/bin:/mingw64/bin:$PATH"
           export PKG_CONFIG_PATH=/mingw64/lib/pkgconfig
           cabal run hsqml-test1 --enable-tests
 
