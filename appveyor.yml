@@ -41,7 +41,6 @@ install:
         mingw-w64-x86_64-qt5-translations \
         mingw-w64-x86_64-qt5-winextras \
         mingw-w64-x86_64-angleproject"
-      cabal update
       cabal configure --enable-tests
 
 build_script:
