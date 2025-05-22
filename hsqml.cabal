@@ -126,6 +126,8 @@ Library
         cbits/Manager.h
         cbits/Model.h
     Cxx-options: --std=c++11
+    if os(windows)
+        Cxx-options: -DQT_STATICPLUGIN
     X-separate-cbits: True
     build-tool-depends: c2hs:c2hs
     if flag(ForceGHCiLib)

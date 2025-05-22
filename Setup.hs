@@ -112,6 +112,7 @@ substPaths mocPath cppPath build =
   in build {
       includeDirs = map replacePath (includeDirs build),
       extraLibDirs = map replacePath (extraLibDirs build),
+      cxxOptions = map replacePath (cxxOptions build),
       ccOptions = map replacePath (ccOptions build),
       cppOptions = map replaceOption (cppOptions build),
       extraFrameworkDirs = map replacePath (extraFrameworkDirs build),
@@ -150,8 +151,8 @@ fixQtBuild verb lbi build = do
       createDirectoryIfMissingVerbose verb True (takeDirectory o)
       runProgram verb moc $ [i,"-o",o] ++ args) $ zip incs cpps
   -- Add the moc generated source files to be compiled
-  return build {cSources = cpps ++ cSources build,
-                ccOptions = "-fPIC" : ccOptions build}
+  return build {cxxSources = cpps ++ cxxSources build,
+                cxxOptions = "-fPIC" : cxxOptions build}
 
 needsGHCiFix :: PackageDescription -> LocalBuildInfo -> Bool
 needsGHCiFix pkgDesc lbi =
@@ -196,7 +197,7 @@ buildGHCiFix verb pkgDesc lbi lib =
       ["-shared","-o",bDir </> (mkGHCiFixLibName pkgDesc platform)] ++
       (ldOptions bi) ++ (map ("-l" ++) $ extraLibs bi) ++
       (map ("-L" ++) $ extraLibDirs bi) ++
-      (map ((bDir </>) . flip replaceExtension objExtension) $ cSources bi))
+      (map ((bDir </>) . flip replaceExtension objExtension) $ cxxSources bi))
     return ()
 
 mocProgram :: Program
