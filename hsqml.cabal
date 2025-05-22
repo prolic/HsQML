@@ -64,7 +64,7 @@ common extensions
     NoPolyKinds
     TypeOperators
 
-  default-language:   GHC2021
+  default-language:   Haskell2010
 
 common ghc-options
   ghc-options:
