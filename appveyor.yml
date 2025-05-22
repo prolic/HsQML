@@ -1,19 +1,21 @@
 version: 1.0.{build}
 
 environment:
-  matrix:
-    - GHCVER: 9.4.8
-    - GHCVER: 9.6.6
+  GHCUP_NONINTERACTIVE: "1"
+  GHCUP_INSTALL_ONLY: "1"
+  GHCUP_NO_ANALYTICS: "1"
+  GHCUP_USE_XDG_DIRS: "1"
+  GHCUP_DEFAULT_TOOLCHAIN: "ghc-9.6.7"
+  BOOTSTRAP_HASKELL_GHC_VERSION: "9.6.7"
+  BOOTSTRAP_HASKELL_CABAL_VERSION: "3.10.3.0"
 
 install:
   - ps: |
-      choco install haskell-dev
-      choco install msys2
-      refreshenv
-      Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
-      refreshenv
-      $env:Path = "C:\tools\ghc-$env:GHCVER\bin;C:\ghcup\bin;$env:Path"
-      # Install build tools and Qt dependencies via MSYS2
+      Set-ExecutionPolicy Bypass -Scope Process -Force
+      [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+      Invoke-WebRequest https://www.haskell.org/ghcup/sh/bootstrap-haskell.ps1 -UseBasicParsing -OutFile bootstrap.ps1
+      powershell -NoProfile -ExecutionPolicy Bypass -File .\bootstrap.ps1 -DisableCurl -NonInteractive
+
       C:\tools\msys64\usr\bin\bash.exe -lc "pacman -Syu --noconfirm"
       C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm \
         autoconf \
@@ -46,13 +48,13 @@ build_script:
   - ps: |
       $env:Path = "C:\tools\ghc-$env:GHCVER\bin;C:\ghcup\bin;C:\tools\msys64\mingw64\bin;$env:Path"
       $env:PKG_CONFIG_PATH = "C:\tools\msys64\mingw64\lib\pkgconfig"
-      cabal build --enable-tests
+      C:\tools\msys64\usr\bin\bash.exe -lc "cabal build --enable-tests"
 
 test_script:
   - ps: |
       $env:Path = "C:\tools\ghc-$env:GHCVER\bin;C:\ghcup\bin;C:\tools\msys64\mingw64\bin;$env:Path"
       $env:PKG_CONFIG_PATH = "C:\tools\msys64\mingw64\lib\pkgconfig"
-      cabal run hsqml-test1
+      C:\tools\msys64\usr\bin\bash.exe -lc "cabal run hsqml-test1"
 
 cache:
   - C:\Users\appveyor\AppData\Roaming\cabal\store
