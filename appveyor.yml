@@ -13,9 +13,32 @@ install:
       Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
       refreshenv
       $env:Path = "C:\tools\ghc-$env:GHCVER\bin;C:\ghcup\bin;$env:Path"
-      # Install Qt dependencies via MSYS2
+      # Install build tools and Qt dependencies via MSYS2
       C:\tools\msys64\usr\bin\bash.exe -lc "pacman -Syu --noconfirm"
-      C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm mingw-w64-x86_64-qt5-base mingw-w64-x86_64-qt5-declarative mingw-w64-x86_64-qt5-graphicaleffects mingw-w64-x86_64-qt5-imageformats mingw-w64-x86_64-qt5-multimedia mingw-w64-x86_64-qt5-quickcontrols2 mingw-w64-x86_64-qt5-svg mingw-w64-x86_64-qt5-tools mingw-w64-x86_64-qt5-translations mingw-w64-x86_64-qt5-winextras mingw-w64-x86_64-angleproject"
+      C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm \
+        autoconf \
+        autogen \
+        automake \
+        libtool \
+        gcc \
+        git \
+        mingw-w64-x86_64-libunwind \
+        mingw-w64-x86_64-toolchain \
+        mingw-w64-x86_64-make \
+        mingw-w64-x86_64-cmake \
+        mingw-w64-x86_64-autotools \
+        mingw-w64-x86_64-pkg-config \
+        mingw-w64-x86_64-qt5-base \
+        mingw-w64-x86_64-qt5-declarative \
+        mingw-w64-x86_64-qt5-graphicaleffects \
+        mingw-w64-x86_64-qt5-imageformats \
+        mingw-w64-x86_64-qt5-multimedia \
+        mingw-w64-x86_64-qt5-quickcontrols2 \
+        mingw-w64-x86_64-qt5-svg \
+        mingw-w64-x86_64-qt5-tools \
+        mingw-w64-x86_64-qt5-translations \
+        mingw-w64-x86_64-qt5-winextras \
+        mingw-w64-x86_64-angleproject"
       cabal update
       cabal configure --enable-tests
 
