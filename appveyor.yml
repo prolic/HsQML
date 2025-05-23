@@ -14,8 +14,10 @@ install:
       refreshenv
 
       # Install Haskell
-      choco install haskell-dev
+      choco install ghcup
       refreshenv
+      ghcup install ghc $env:GHCVER
+      ghcup set ghc $env:GHCVER
       $env:Path = "C:\tools\ghc-$env:GHCVER\bin;C:\ghcup\bin;$env:Path"
       C:\tools\msys64\usr\bin\bash.exe -lc "cabal update"
 
