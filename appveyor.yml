@@ -33,6 +33,8 @@ install:
         mingw-w64-x86_64-cmake \
         mingw-w64-x86_64-autotools \
         mingw-w64-x86_64-pkg-config \
+        mingw-w64-x86_64-libtiff \
+        mingw-w64-x86_64-libwebp \
         mingw-w64-x86_64-qt5-base \
         mingw-w64-x86_64-qt5-declarative \
         mingw-w64-x86_64-qt5-graphicaleffects \
