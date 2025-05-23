@@ -18,6 +18,8 @@ install:
       refreshenv
       ghcup install ghc $env:GHCVER
       ghcup set ghc $env:GHCVER
+      ghcup install cabal latest
+      ghcup set cabal 3.10.3.0
       $env:Path = "C:\tools\ghc-$env:GHCVER\bin;C:\ghcup\bin;$env:Path"
       C:\tools\msys64\usr\bin\bash.exe -lc "cabal update"
 
