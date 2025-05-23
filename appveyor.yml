@@ -66,6 +66,9 @@ test_script:
   - ps: |
       $env:Path = "C:\tools\ghc-$env:GHCVER\bin;C:\ghcup\bin;C:\tools\msys64\mingw64\bin;$env:Path"
       $env:PKG_CONFIG_PATH = "C:\tools\msys64\mingw64\lib\pkgconfig"
+      C:\tools\msys64\usr\bin\bash.exe -lc "cabal update"
+      C:\tools\msys64\usr\bin\bash.exe -lc "cabal configure --enable-tests"
+      C:\tools\msys64\usr\bin\bash.exe -lc "cabal build --enable-tests"
       C:\tools\msys64\usr\bin\bash.exe -lc "cabal run hsqml-test1"
 
 cache:
