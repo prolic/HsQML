@@ -35,15 +35,17 @@ install:
         mingw-w64-x86_64-pkg-config \
         mingw-w64-x86_64-libtiff \
         mingw-w64-x86_64-libwebp \
+        mingw-w64-x86_64-freetype \
+        mingw-w64-x86_64-harfbuzz \
         mingw-w64-x86_64-qt5-base \
+        mingw-w64-x86_64-qt5-tools \
+        mingw-w64-x86_64-qt5-translations \
         mingw-w64-x86_64-qt5-declarative \
         mingw-w64-x86_64-qt5-graphicaleffects \
         mingw-w64-x86_64-qt5-imageformats \
         mingw-w64-x86_64-qt5-multimedia \
         mingw-w64-x86_64-qt5-quickcontrols2 \
         mingw-w64-x86_64-qt5-svg \
-        mingw-w64-x86_64-qt5-tools \
-        mingw-w64-x86_64-qt5-translations \
         mingw-w64-x86_64-qt5-winextras \
         mingw-w64-x86_64-angleproject"
 
