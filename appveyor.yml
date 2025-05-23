@@ -17,6 +17,7 @@ install:
       choco install haskell-dev
       refreshenv
       $env:Path = "C:\tools\ghc-$env:GHCVER\bin;C:\ghcup\bin;$env:Path"
+      C:\tools\msys64\usr\bin\bash.exe -lc "cabal update"
 
       # Install MSYS2 packages
       C:\tools\msys64\usr\bin\bash.exe -lc "pacman -Syu --noconfirm"
@@ -66,10 +67,10 @@ test_script:
   - ps: |
       $env:Path = "C:\tools\ghc-$env:GHCVER\bin;C:\ghcup\bin;C:\tools\msys64\mingw64\bin;$env:Path"
       $env:PKG_CONFIG_PATH = "C:\tools\msys64\mingw64\lib\pkgconfig"
-      C:\tools\msys64\usr\bin\bash.exe -lc "cabal update"
-      C:\tools\msys64\usr\bin\bash.exe -lc "cabal configure --enable-tests"
-      C:\tools\msys64\usr\bin\bash.exe -lc "cabal build --enable-tests"
-      C:\tools\msys64\usr\bin\bash.exe -lc "cabal run hsqml-test1"
+      C:\tools\msys64\usr\bin\bash.exe -lc "cd /c/projects/hsqml && \
+        cabal configure --enable-tests && \
+        cabal build --enable-tests && \
+        cabal run hsqml-test1"
 
 cache:
   - C:\Users\appveyor\AppData\Roaming\cabal\store
