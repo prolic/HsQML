@@ -18,9 +18,11 @@ install:
       refreshenv
       ghcup install ghc $env:GHCVER
       ghcup set ghc $env:GHCVER
-      ghcup install cabal latest
+      ghcup install cabal 3.10.3.0
       ghcup set cabal 3.10.3.0
-      $env:Path = "C:\tools\ghc-$env:GHCVER\bin;C:\ghcup\bin;$env:Path"
+      refreshenv
+      $env:Path = "C:\tools\ghc-$env:GHCVER\bin;$env:LOCALAPPDATA\ghcup\bin;$env:Path"
+      cabal --version
       C:\tools\msys64\usr\bin\bash.exe -lc "cabal update"
 
       # Install MSYS2 packages
