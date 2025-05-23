@@ -23,7 +23,7 @@ install:
       refreshenv
       $env:Path = "C:\tools\ghc-$env:GHCVER\bin;$env:LOCALAPPDATA\ghcup\bin;$env:Path"
       cabal --version
-      C:\tools\msys64\usr\bin\bash.exe -lc "export PATH=\"$env:Path\" && cd /c/projects/hsqml && cabal update"
+      C:\tools\msys64\usr\bin\bash.exe -lc 'export PATH="$env:Path" && cd /c/projects/hsqml && cabal update'
 
       # Install MSYS2 packages
       C:\tools\msys64\usr\bin\bash.exe -lc "pacman -Syu --noconfirm"
@@ -73,10 +73,10 @@ test_script:
   - ps: |
       $env:Path = "C:\tools\ghc-$env:GHCVER\bin;$env:LOCALAPPDATA\ghcup\bin;C:\tools\msys64\mingw64\bin;$env:Path"
       $env:PKG_CONFIG_PATH = "C:\tools\msys64\mingw64\lib\pkgconfig"
-      C:\tools\msys64\usr\bin\bash.exe -lc "export PATH=\"$env:Path\" && cd /c/projects/hsqml && \
+      C:\tools\msys64\usr\bin\bash.exe -lc 'export PATH="$env:Path" && cd /c/projects/hsqml && \
         cabal configure --enable-tests && \
         cabal build --enable-tests && \
-        cabal run hsqml-test1"
+        cabal run hsqml-test1'
 
 cache:
   - C:\Users\appveyor\AppData\Roaming\cabal\store
