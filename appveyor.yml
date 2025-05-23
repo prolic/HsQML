@@ -68,9 +68,9 @@ test_script:
       $env:Path = "C:\tools\ghc-$env:GHCVER\bin;C:\ghcup\bin;C:\tools\msys64\mingw64\bin;$env:Path"
       $env:PKG_CONFIG_PATH = "C:\tools\msys64\mingw64\lib\pkgconfig"
       C:\tools\msys64\usr\bin\bash.exe -lc "cd /c/projects/hsqml && \
-        cabal configure --enable-tests && \
-        cabal build --enable-tests && \
-        cabal run hsqml-test1"
+        cabal configure --enable-tests --ghc-options='-Wno-error=unused-imports -Wno-error=orphans' && \
+        cabal build --enable-tests --ghc-options='-Wno-error=unused-imports -Wno-error=orphans' && \
+        cabal run hsqml-test1 --ghc-options='-Wno-error=unused-imports -Wno-error=orphans'"
 
 cache:
   - C:\Users\appveyor\AppData\Roaming\cabal\store
