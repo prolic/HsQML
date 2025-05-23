@@ -20,6 +20,8 @@ install:
 
       # Install MSYS2 packages
       C:\tools\msys64\usr\bin\bash.exe -lc "pacman -Syu --noconfirm"
+      
+      # Install build tools
       C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm \
         autoconf \
         autogen \
@@ -32,14 +34,25 @@ install:
         mingw-w64-x86_64-make \
         mingw-w64-x86_64-cmake \
         mingw-w64-x86_64-autotools \
-        mingw-w64-x86_64-pkg-config \
+        mingw-w64-x86_64-pkg-config"
+
+      # Install image format dependencies
+      C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm \
         mingw-w64-x86_64-libtiff \
         mingw-w64-x86_64-libwebp \
-        mingw-w64-x86_64-freetype \
-        mingw-w64-x86_64-harfbuzz \
+        mingw-w64-x86_64-freetype"
+
+      # Install harfbuzz after freetype
+      C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm mingw-w64-x86_64-harfbuzz"
+
+      # Install Qt base and core
+      C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm \
         mingw-w64-x86_64-qt5-base \
         mingw-w64-x86_64-qt5-tools \
-        mingw-w64-x86_64-qt5-translations \
+        mingw-w64-x86_64-qt5-translations"
+
+      # Install Qt modules
+      C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm \
         mingw-w64-x86_64-qt5-declarative \
         mingw-w64-x86_64-qt5-graphicaleffects \
         mingw-w64-x86_64-qt5-imageformats \
