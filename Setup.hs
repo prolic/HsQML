@@ -190,8 +190,6 @@ buildGHCiFix verb pkgDesc lbi lib =
       _ -> do
         (ld,_) <- requireProgram verb ldProgram (withPrograms lbi)
         combineObjectFiles verb lbi ld (bDir </> lname <.> "o") (stubObjs ++ hsObjs)
-    (ld,_) <- requireProgram verb ldProgram (withPrograms lbi)
-    combineObjectFiles verb lbi ld (bDir </> lname <.> "o") (stubObjs ++ hsObjs)
     (ghc,_) <- requireProgram verb ghcProgram (withPrograms lbi)
     let bi = libBuildInfo lib
     runProgram verb ghc (
