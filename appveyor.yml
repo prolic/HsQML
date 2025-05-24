@@ -69,12 +69,24 @@ init:
 
 test_script:
   - ps: |
+      # Debug: Check if cabal actually exists
+      $cabalPath = "$env:LOCALAPPDATA\ghcup\bin\cabal.exe"
+      Write-Host "Checking if cabal exists at: $cabalPath"
+      Test-Path $cabalPath
+      Get-ChildItem "$env:LOCALAPPDATA\ghcup\bin" -ErrorAction SilentlyContinue
+      
+      # Test cabal in PowerShell first
       $env:Path = "C:\tools\ghc-9.6.7\bin;$env:LOCALAPPDATA\ghcup\bin;$env:Path"
-      C:\tools\msys64\usr\bin\bash.exe -lc 'export PATH="$env:Path" && \
-        cd /c/projects/hsqml && \
-        cabal configure --enable-tests && \
-        cabal build --enable-tests && \
-        cabal run hsqml-test1'
+      Write-Host "Testing cabal in PowerShell..."
+      & $cabalPath --version
+      
+      # Use full path to cabal in bash
+      $unixCabalPath = $cabalPath -replace '\\', '/' -replace 'C:', '/c'
+      Write-Host "Using cabal path in bash: $unixCabalPath"
+      C:\tools\msys64\usr\bin\bash.exe -lc "cd /c/projects/hsqml && \
+        $unixCabalPath configure --enable-tests && \
+        $unixCabalPath build --enable-tests && \
+        $unixCabalPath run hsqml-test1"
 
 cache:
   - C:\Users\appveyor\AppData\Roaming\cabal\store
