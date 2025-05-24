@@ -10,52 +10,21 @@ install:
 before_build:
   - cabal --version
   - ghc --version
-  - cabal %CABOPTS% update
-
-environment:
-  global:
-    CABOPTS: --store-dir=C:\\SR --http-transport=plain-http
+  - cabal update
 
 clone_folder: "C:\\hsqml"
 
 build_script:
-  - C:\tools\msys64\usr\bin\bash.exe -lc "pacman -Syu --noconfirm && \
-      pacman -S --noconfirm \
-        autoconf \
-        autogen \
-        automake \
-        libtool \
-        gcc \
-        git \
-        mingw-w64-x86_64-libunwind \
-        mingw-w64-x86_64-toolchain \
-        mingw-w64-x86_64-make \
-        mingw-w64-x86_64-cmake \
-        mingw-w64-x86_64-autotools \
-        mingw-w64-x86_64-pkg-config && \
-      pacman -S --noconfirm \
-        mingw-w64-x86_64-libtiff \
-        mingw-w64-x86_64-libwebp \
-        mingw-w64-x86_64-freetype && \
-      pacman -S --noconfirm mingw-w64-x86_64-harfbuzz && \
-      pacman -S --noconfirm \
-        mingw-w64-x86_64-qt5-base \
-        mingw-w64-x86_64-qt5-tools \
-        mingw-w64-x86_64-qt5-translations && \
-      pacman -S --noconfirm \
-        mingw-w64-x86_64-qt5-declarative \
-        mingw-w64-x86_64-qt5-graphicaleffects \
-        mingw-w64-x86_64-qt5-imageformats \
-        mingw-w64-x86_64-qt5-multimedia \
-        mingw-w64-x86_64-qt5-quickcontrols2 \
-        mingw-w64-x86_64-qt5-svg \
-        mingw-w64-x86_64-qt5-winextras \
-        mingw-w64-x86_64-angleproject && \
-      cd /c/hsqml && \
-        cabal $CABOPTS configure --enable-tests && \
-        cabal $CABOPTS build --enable-tests && \
-        cabal $CABOPTS run hsqml-test1"
+  - C:\tools\msys64\usr\bin\bash.exe -lc "pacman -Syu --noconfirm"
+  - C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm autoconf autogen automake libtool gcc git mingw-w64-x86_64-libunwind mingw-w64-x86_64-toolchain mingw-w64-x86_64-make mingw-w64-x86_64-cmake mingw-w64-x86_64-autotools mingw-w64-x86_64-pkg-config"
+  - C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm mingw-w64-x86_64-libtiff mingw-w64-x86_64-libwebp mingw-w64-x86_64-freetype"
+  - C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm mingw-w64-x86_64-harfbuzz"
+  - C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm mingw-w64-x86_64-qt5-base mingw-w64-x86_64-qt5-tools mingw-w64-x86_64-qt5-translations"
+  - C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm mingw-w64-x86_64-qt5-declarative mingw-w64-x86_64-qt5-graphicaleffects mingw-w64-x86_64-qt5-imageformats mingw-w64-x86_64-qt5-multimedia mingw-w64-x86_64-qt5-quickcontrols2 mingw-w64-x86_64-qt5-svg mingw-w64-x86_64-qt5-winextras mingw-w64-x86_64-angleproject"
+  - C:\tools\msys64\usr\bin\bash.exe -lc "cd /c/hsqml && cabal configure --enable-tests"
+  - C:\tools\msys64\usr\bin\bash.exe -lc "cd /c/hsqml && cabal build --enable-tests"
+  - C:\tools\msys64\usr\bin\bash.exe -lc "cd /c/hsqml && cabal run hsqml-test1"
 
 cache:
   - dist-newstyle
-  - "C:\\sr"
+
