@@ -21,9 +21,9 @@ build_script:
   - C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm mingw-w64-x86_64-harfbuzz"
   - C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm mingw-w64-x86_64-qt5-base mingw-w64-x86_64-qt5-tools mingw-w64-x86_64-qt5-translations"
   - C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm mingw-w64-x86_64-qt5-declarative mingw-w64-x86_64-qt5-graphicaleffects mingw-w64-x86_64-qt5-imageformats mingw-w64-x86_64-qt5-multimedia mingw-w64-x86_64-qt5-quickcontrols2 mingw-w64-x86_64-qt5-svg mingw-w64-x86_64-qt5-winextras mingw-w64-x86_64-angleproject"
-  - C:\tools\msys64\usr\bin\bash.exe -lc "cd /c/hsqml && cabal configure --enable-tests"
-  - C:\tools\msys64\usr\bin\bash.exe -lc "cd /c/hsqml && cabal build --enable-tests"
-  - C:\tools\msys64\usr\bin\bash.exe -lc "cd /c/hsqml && cabal run hsqml-test1"
+  - C:\tools\msys64\usr\bin\bash.exe -lc "export PATH=/mingw64/bin:$PATH && cd /c/hsqml && cabal configure --enable-tests"
+  - C:\tools\msys64\usr\bin\bash.exe -lc "export PATH=/mingw64/bin:$PATH && cd /c/hsqml && cabal build --enable-tests"
+  - C:\tools\msys64\usr\bin\bash.exe -lc "export PATH=/mingw64/bin:$PATH && cd /c/hsqml && cabal run hsqml-test1"
 
 cache:
   - dist-newstyle
