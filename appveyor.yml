@@ -69,11 +69,12 @@ install:
 
 test_script:
   - ps: |
-      C:\tools\msys64\usr\bin\bash.exe -lc "export PATH=`"/c/tools/ghc-9.6.7/bin:/c/Users/appveyor/AppData/Local/ghcup/bin:/mingw64/bin:`$PATH`" && \
+      $env:Path = "C:\tools\ghc-9.6.7\bin;$env:LOCALAPPDATA\ghcup\bin;C:\tools\msys64\mingw64\bin;$env:Path"
+      C:\tools\msys64\usr\bin\bash.exe -lc 'export PATH="$env:Path" && \
         cd /c/projects/hsqml && \
         cabal configure --enable-tests && \
         cabal build --enable-tests && \
-        cabal run hsqml-test1"
+        cabal run hsqml-test1'
 
 cache:
   - C:\Users\appveyor\AppData\Roaming\cabal\store
