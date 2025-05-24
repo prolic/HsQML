@@ -69,7 +69,17 @@ install:
 
 test_script:
   - ps: |
-      $env:Path = "C:\tools\ghc-9.6.7\bin;$env:LOCALAPPDATA\ghcup\bin;C:\tools\msys64\mingw64\bin;$env:Path"
+      # Debug: Check if cabal exists and where
+      Write-Host "Checking cabal location..."
+      Get-ChildItem "C:\tools\ghc-9.6.7\bin" -ErrorAction SilentlyContinue
+      Get-ChildItem "$env:LOCALAPPDATA\ghcup\bin" -ErrorAction SilentlyContinue
+      
+      # Try to run cabal directly first
+      $env:Path = "C:\tools\ghc-9.6.7\bin;$env:LOCALAPPDATA\ghcup\bin;$env:Path"
+      Write-Host "Testing cabal in PowerShell..."
+      cabal --version
+      
+      # Now try in bash
       C:\tools\msys64\usr\bin\bash.exe -lc 'export PATH="$env:Path" && \
         cd /c/projects/hsqml && \
         cabal configure --enable-tests && \
