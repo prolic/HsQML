@@ -69,27 +69,25 @@ install:
 
 test_script:
   - ps: |
-      # Debug: Check what's actually installed
-      Write-Host "Current PATH: $env:Path"
-      Write-Host "LOCALAPPDATA: $env:LOCALAPPDATA"
-      
-      # Check specific locations for cabal
-      Write-Host "Checking specific cabal locations..."
-      Test-Path "$env:LOCALAPPDATA\ghcup\bin\cabal.exe"
-      Test-Path "C:\tools\ghc-9.6.7\bin\cabal.exe"
-      
-      # Re-setup ghcup environment (might be needed in new session)
-      Write-Host "Re-setting up ghcup..."
-      ghcup set ghc 9.6.7
-      ghcup set cabal 3.10.3.0
+      # Reinstall ghcup since it doesn't persist between phases
+      Write-Host "Reinstalling ghcup..."
+      choco install ghcup
       refreshenv
       
-      # Try again
+      # Install GHC and Cabal
+      ghcup install ghc 9.6.7
+      ghcup set ghc 9.6.7
+      ghcup install cabal 3.10.3.0
+      ghcup set cabal 3.10.3.0
+      
+      # Set PATH
       $env:Path = "C:\tools\ghc-9.6.7\bin;$env:LOCALAPPDATA\ghcup\bin;$env:Path"
-      Write-Host "Testing cabal after setup..."
+      
+      # Test cabal
+      Write-Host "Testing cabal..."
       cabal --version
       
-      # Now try in bash
+      # Run the actual tests
       C:\tools\msys64\usr\bin\bash.exe -lc 'export PATH="$env:Path" && \
         cd /c/projects/hsqml && \
         cabal configure --enable-tests && \
