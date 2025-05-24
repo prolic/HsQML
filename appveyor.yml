@@ -52,6 +52,9 @@ install:
       # Install harfbuzz after freetype
       C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm mingw-w64-x86_64-harfbuzz"
 
+      # Install LMDB library required by lmdb Haskell package
+      C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm mingw-w64-x86_64-lmdb"
+
       # Install Qt base and core
       C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm \
         mingw-w64-x86_64-qt5-base \
@@ -72,8 +75,7 @@ install:
 test_script:
   - ps: |
       $env:Path = "C:\tools\ghc-$env:GHCVER\bin;$env:LOCALAPPDATA\ghcup\bin;C:\tools\msys64\mingw64\bin;$env:Path"
-      $env:PKG_CONFIG_PATH = "C:\tools\msys64\mingw64\lib\pkgconfig"
-      C:\tools\msys64\usr\bin\bash.exe -lc 'export PATH="$env:Path" && cd /c/projects/hsqml && \
+      C:\tools\msys64\usr\bin\bash.exe -lc 'cd /c/projects/hsqml && \
         cabal configure --enable-tests && \
         cabal build --enable-tests && \
         cabal run hsqml-test1'
