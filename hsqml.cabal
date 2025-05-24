@@ -15,7 +15,7 @@ Synopsis:           Haskell binding for Qt Quick
 tested-with: GHC ==9.4.8 || ==9.6.6
 
 Extra-source-files:
-    README CHANGELOG
+    README.md CHANGELOG
     cbits/*.cpp cbits/*.h test/Graphics/QML/Test/*.hs
 
 Description:
