@@ -1,30 +1,26 @@
 build: off
 
-init:
-  - ps: |
-      # Install MSYS2
-      choco install msys2
-      refreshenv
-      Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
-      refreshenv
+install:
+  - choco source add -n mistuke -s https://www.myget.org/F/mistuke/api/v2
+  - choco install -y cabal --version 3.10.3.0
+  - choco install -y ghc --version 9.6.7
+  - choco install -y msys2
+  - refreshenv
 
-      # Install Haskell
-      choco install ghcup
-      refreshenv
-      ghcup install ghc 9.6.7
-      ghcup set ghc 9.6.7
-      ghcup install cabal 3.10.3.0
-      ghcup set cabal 3.10.3.0
-      refreshenv
-      $env:Path = "C:\tools\ghc-9.6.7\bin;$env:LOCALAPPDATA\ghcup\bin;$env:Path"
-      cabal --version
-      C:\tools\msys64\usr\bin\bash.exe -lc 'export PATH="$env:Path" && cd /c/projects/hsqml && cabal update'
+before_build:
+  - cabal --version
+  - ghc --version
+  - cabal %CABOPTS% update
 
-      # Install MSYS2 packages
-      C:\tools\msys64\usr\bin\bash.exe -lc "pacman -Syu --noconfirm"
-      
-      # Install build tools
-      C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm \
+environment:
+  global:
+    CABOPTS: --store-dir=C:\\SR --http-transport=plain-http
+
+clone_folder: "C:\\hsqml"
+
+build_script:
+  - C:\tools\msys64\usr\bin\bash.exe -lc "pacman -Syu --noconfirm && \
+      pacman -S --noconfirm \
         autoconf \
         autogen \
         automake \
@@ -36,28 +32,17 @@ init:
         mingw-w64-x86_64-make \
         mingw-w64-x86_64-cmake \
         mingw-w64-x86_64-autotools \
-        mingw-w64-x86_64-pkg-config"
-
-      # Install image format dependencies
-      C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm \
+        mingw-w64-x86_64-pkg-config && \
+      pacman -S --noconfirm \
         mingw-w64-x86_64-libtiff \
         mingw-w64-x86_64-libwebp \
-        mingw-w64-x86_64-freetype"
-
-      # Install harfbuzz after freetype
-      C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm mingw-w64-x86_64-harfbuzz"
-
-      # Install LMDB library required by lmdb Haskell package
-      C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm mingw-w64-x86_64-lmdb"
-
-      # Install Qt base and core
-      C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm \
+        mingw-w64-x86_64-freetype && \
+      pacman -S --noconfirm mingw-w64-x86_64-harfbuzz && \
+      pacman -S --noconfirm \
         mingw-w64-x86_64-qt5-base \
         mingw-w64-x86_64-qt5-tools \
-        mingw-w64-x86_64-qt5-translations"
-
-      # Install Qt modules
-      C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm \
+        mingw-w64-x86_64-qt5-translations && \
+      pacman -S --noconfirm \
         mingw-w64-x86_64-qt5-declarative \
         mingw-w64-x86_64-qt5-graphicaleffects \
         mingw-w64-x86_64-qt5-imageformats \
@@ -65,29 +50,12 @@ init:
         mingw-w64-x86_64-qt5-quickcontrols2 \
         mingw-w64-x86_64-qt5-svg \
         mingw-w64-x86_64-qt5-winextras \
-        mingw-w64-x86_64-angleproject"
-
-test_script:
-  - ps: |
-      # Debug: Check if cabal actually exists
-      $cabalPath = "$env:LOCALAPPDATA\ghcup\bin\cabal.exe"
-      Write-Host "Checking if cabal exists at: $cabalPath"
-      Test-Path $cabalPath
-      Get-ChildItem "$env:LOCALAPPDATA\ghcup\bin" -ErrorAction SilentlyContinue
-      
-      # Test cabal in PowerShell first
-      $env:Path = "C:\tools\ghc-9.6.7\bin;$env:LOCALAPPDATA\ghcup\bin;$env:Path"
-      Write-Host "Testing cabal in PowerShell..."
-      & $cabalPath --version
-      
-      # Use full path to cabal in bash
-      $unixCabalPath = $cabalPath -replace '\\', '/' -replace 'C:', '/c'
-      Write-Host "Using cabal path in bash: $unixCabalPath"
-      C:\tools\msys64\usr\bin\bash.exe -lc "cd /c/projects/hsqml && \
-        $unixCabalPath configure --enable-tests && \
-        $unixCabalPath build --enable-tests && \
-        $unixCabalPath run hsqml-test1"
+        mingw-w64-x86_64-angleproject && \
+      cd /c/hsqml && \
+        cabal $CABOPTS configure --enable-tests && \
+        cabal $CABOPTS build --enable-tests && \
+        cabal $CABOPTS run hsqml-test1"
 
 cache:
-  - C:\Users\appveyor\AppData\Roaming\cabal\store
-  - dist-newstyle 
+  - dist-newstyle
+  - "C:\\sr"
