@@ -69,14 +69,23 @@ install:
 
 test_script:
   - ps: |
-      # Debug: Check if cabal exists and where
-      Write-Host "Checking cabal location..."
-      Get-ChildItem "C:\tools\ghc-9.6.7\bin" -ErrorAction SilentlyContinue
-      Get-ChildItem "$env:LOCALAPPDATA\ghcup\bin" -ErrorAction SilentlyContinue
+      # Debug: Check what's actually installed
+      Write-Host "Current PATH: $env:Path"
+      Write-Host "LOCALAPPDATA: $env:LOCALAPPDATA"
       
-      # Try to run cabal directly first
+      # Search for cabal executable
+      Write-Host "Searching for cabal..."
+      Get-ChildItem C:\ -Recurse -Name "cabal.exe" -ErrorAction SilentlyContinue | Select-Object -First 5
+      
+      # Re-setup ghcup environment (might be needed in new session)
+      Write-Host "Re-setting up ghcup..."
+      ghcup set ghc 9.6.7
+      ghcup set cabal 3.10.3.0
+      refreshenv
+      
+      # Try again
       $env:Path = "C:\tools\ghc-9.6.7\bin;$env:LOCALAPPDATA\ghcup\bin;$env:Path"
-      Write-Host "Testing cabal in PowerShell..."
+      Write-Host "Testing cabal after setup..."
       cabal --version
       
       # Now try in bash
