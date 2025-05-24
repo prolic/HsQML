@@ -73,9 +73,10 @@ test_script:
       Write-Host "Current PATH: $env:Path"
       Write-Host "LOCALAPPDATA: $env:LOCALAPPDATA"
       
-      # Search for cabal executable
-      Write-Host "Searching for cabal..."
-      Get-ChildItem C:\ -Recurse -Name "cabal.exe" -ErrorAction SilentlyContinue | Select-Object -First 5
+      # Check specific locations for cabal
+      Write-Host "Checking specific cabal locations..."
+      Test-Path "$env:LOCALAPPDATA\ghcup\bin\cabal.exe"
+      Test-Path "C:\tools\ghc-9.6.7\bin\cabal.exe"
       
       # Re-setup ghcup environment (might be needed in new session)
       Write-Host "Re-setting up ghcup..."
