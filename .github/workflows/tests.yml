@@ -33,7 +33,7 @@ jobs:
 
       - name: Set up Haskell
         id: setup-haskell
-        uses: haskell-actions/setup@v2
+        uses: haskell-actions/setup@v2.8
         with:
           ghc-version: ${{ matrix.ghc }}
           cabal-version: 'latest'
@@ -65,16 +65,12 @@ jobs:
             qtmultimedia5-dev \
             qml-module-qtmultimedia \
             qttools5-dev-tools \
-            qtbase5-dev \
-            xvfb
-
-      - name: Start Xvfb
-        run: |
-          Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-          echo "DISPLAY=:99" >> $GITHUB_ENV
+            qtbase5-dev
 
       - name: Build
         run: cabal build --enable-tests
 
       - name: Test
-        run: cabal run hsqml-test1 --enable-tests
+        run: |
+          export QT_QPA_PLATFORM=offscreen
+          cabal run hsqml-test1 --enable-tests

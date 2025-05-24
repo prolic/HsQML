@@ -1,0 +1,28 @@
+build: off
+
+install:
+  - choco source add -n mistuke -s https://www.myget.org/F/mistuke/api/v2
+  - choco install -y cabal --version 3.10.2.0
+  - choco install -y ghc --version 9.6.5
+  - choco install -y msys2
+  - refreshenv
+
+before_build:
+  - cabal --version
+  - ghc --version
+  - cabal update
+
+clone_folder: "C:\\hsqml"
+
+build_script:
+  - C:\tools\msys64\usr\bin\bash.exe -lc "pacman -Syu --noconfirm"
+  - C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm autoconf autogen automake libtool gcc git mingw-w64-x86_64-libunwind mingw-w64-x86_64-toolchain mingw-w64-x86_64-make mingw-w64-x86_64-cmake mingw-w64-x86_64-autotools mingw-w64-x86_64-pkg-config"
+  - C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm mingw-w64-x86_64-libtiff mingw-w64-x86_64-libwebp mingw-w64-x86_64-freetype"
+  - C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm mingw-w64-x86_64-harfbuzz"
+  - C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm mingw-w64-x86_64-qt5-base mingw-w64-x86_64-qt5-tools mingw-w64-x86_64-qt5-translations"
+  - C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm mingw-w64-x86_64-qt5-declarative mingw-w64-x86_64-qt5-graphicaleffects mingw-w64-x86_64-qt5-imageformats mingw-w64-x86_64-qt5-multimedia mingw-w64-x86_64-qt5-quickcontrols2 mingw-w64-x86_64-qt5-svg mingw-w64-x86_64-qt5-winextras mingw-w64-x86_64-angleproject"
+  - C:\tools\msys64\usr\bin\bash.exe -lc "export PATH=/mingw64/bin:$PATH && cd /c/hsqml && cabal configure --enable-tests"
+  - C:\tools\msys64\usr\bin\bash.exe -lc "export PATH=/mingw64/bin:$PATH && cd /c/hsqml && cabal build --enable-tests"
+
+cache:
+  - dist-newstyle
