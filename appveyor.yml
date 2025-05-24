@@ -1,6 +1,6 @@
 build: off
 
-install:
+init:
   - ps: |
       # Install MSYS2
       choco install msys2
