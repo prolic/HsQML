@@ -23,7 +23,10 @@ build_script:
   - C:\tools\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm mingw-w64-x86_64-qt5-declarative mingw-w64-x86_64-qt5-graphicaleffects mingw-w64-x86_64-qt5-imageformats mingw-w64-x86_64-qt5-multimedia mingw-w64-x86_64-qt5-quickcontrols2 mingw-w64-x86_64-qt5-svg mingw-w64-x86_64-qt5-winextras mingw-w64-x86_64-angleproject"
   - C:\tools\msys64\usr\bin\bash.exe -lc "export PATH=/mingw64/bin:$PATH && cd /c/hsqml && cabal configure --enable-tests"
   - C:\tools\msys64\usr\bin\bash.exe -lc "export PATH=/mingw64/bin:$PATH && cd /c/hsqml && cabal build --enable-tests"
-  - C:\tools\msys64\usr\bin\bash.exe -lc "export PATH=/mingw64/bin:$PATH && cd /c/hsqml && echo 'do {Graphics.QML.Debug.setDebugLogLevel 0; putStrLn \"OK\"}' | cabal exec -- ghci | grep OK"
+  - ps: |
+      $env:Path = "C:\tools\msys64\mingw64\bin;$env:Path"
+      cd C:\hsqml
+      echo 'do {Graphics.QML.Debug.setDebugLogLevel 0; putStrLn "OK"}' | cabal exec -- ghci | Select-String "OK"
 
 cache:
   - dist-newstyle
