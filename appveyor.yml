@@ -1,10 +1,5 @@
 build: off
 
-environment:
-  matrix:
-    - GHCVER: 9.4.8
-    - GHCVER: 9.6.7
-
 install:
   - ps: |
       # Install MSYS2
@@ -16,12 +11,12 @@ install:
       # Install Haskell
       choco install ghcup
       refreshenv
-      ghcup install ghc $env:GHCVER
-      ghcup set ghc $env:GHCVER
+      ghcup install ghc 9.6.7
+      ghcup set ghc 9.6.7
       ghcup install cabal 3.10.3.0
       ghcup set cabal 3.10.3.0
       refreshenv
-      $env:Path = "C:\tools\ghc-$env:GHCVER\bin;$env:LOCALAPPDATA\ghcup\bin;$env:Path"
+      $env:Path = "C:\tools\ghc-9.6.7\bin;$env:LOCALAPPDATA\ghcup\bin;$env:Path"
       cabal --version
       C:\tools\msys64\usr\bin\bash.exe -lc 'export PATH="$env:Path" && cd /c/projects/hsqml && cabal update'
 
@@ -74,7 +69,7 @@ install:
 
 test_script:
   - ps: |
-      C:\tools\msys64\usr\bin\bash.exe -lc "export PATH=`"/c/tools/ghc-$env:GHCVER/bin:/c/Users/appveyor/AppData/Local/ghcup/bin:/mingw64/bin:`$PATH`" && \
+      C:\tools\msys64\usr\bin\bash.exe -lc "export PATH=`"/c/tools/ghc-9.6.7/bin:/c/Users/appveyor/AppData/Local/ghcup/bin:/mingw64/bin:`$PATH`" && \
         cd /c/projects/hsqml && \
         cabal configure --enable-tests && \
         cabal build --enable-tests && \
