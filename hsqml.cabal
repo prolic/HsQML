@@ -4,8 +4,8 @@ Version:            0.3.6.0
 Build-type:         Custom
 License:            BSD-3-Clause
 License-file:       LICENSE
-Copyright:          (c) 2010-2018 Robin KAY
-Author:             Robin KAY
+Copyright:          (c) 2010-2018 Robin KAY, (c) 2025 Sascha-Oliver Prolic
+Author:             Robin KAY, Sascha-Oliver Prolic
 Maintainer:         saschaprolic@googlemail.com
 Stability:          experimental
 Homepage:           http://www.gekkou.co.uk/software/hsqml/
