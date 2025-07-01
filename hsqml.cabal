@@ -1,6 +1,6 @@
 cabal-version:      3.8
 Name:               hsqml
-Version:            0.3.6.0
+Version:            0.3.6.1
 Build-type:         Custom
 License:            BSD-3-Clause
 License-file:       LICENSE
