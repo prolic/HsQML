@@ -148,6 +148,7 @@ Library
     else
         if os(darwin) && !flag(UsePkgConfig)
             Frameworks: QtCore QtGui QtWidgets QtNetwork QtQml QtQuick
+            Include-dirs: /QT_ROOT/include
             CC-options: -F /QT_ROOT/lib
             Extra-framework-dirs: /QT_ROOT/lib
         else
