@@ -1,10 +1,11 @@
-#!/usr/bin/runhaskell 
+#!/usr/bin/runhaskell
 module Main where
 
 import Control.Monad
 import Data.Char
 import Data.List
 import Data.Maybe
+import Data.String
 
 import qualified Distribution.InstalledPackageInfo as I
 import qualified Distribution.ModuleName as ModuleName
@@ -184,7 +185,9 @@ buildGHCiFix verb pkgDesc lbi lib =
         hsObjs = map ((bDir </>) . (<.> "o")) ms
         lname  = getHSLibraryName $ componentUnitId clbi
     stubObjs <- fmap catMaybes $
-      mapM (findFileWithExtension [Suffix "o"] [bDir]) $ map (++ "_stub") ms
+      -- fromString is for compatibility between String (Cabal-3.10)
+      -- and Suffix (Cabal-3.12)
+      mapM (findFileWithExtension [fromString "o"] [bDir]) $ map (++ "_stub") ms
     case os of
       "mingw32" -> do
         createArLibArchive verb lbi (bDir </> lname <.> "a") (stubObjs ++ hsObjs)
@@ -233,7 +236,7 @@ copyWithQt pkgDesc lbi hooks flags = do
     -- Stack looks in the non-dyn lib directory
     installOrdinaryFile verb (bDir </> file) (libdir instDirs </> file)
 
-regWithQt :: 
+regWithQt ::
   PackageDescription -> LocalBuildInfo -> UserHooks -> RegisterFlags -> IO ()
 regWithQt pkg@PackageDescription { library = Just lib } lbi _ flags = do
   let verb    = fromFlag $ regVerbosity flags
@@ -267,7 +270,7 @@ regWithQt pkg@PackageDescription { library = Just lib } lbi _ flags = do
               opts  = defaultRegisterOptions
           in registerPackage verb comp progs pkgDb instPkgInfo' opts
 regWithQt pkgDesc _ _ flags =
-  setupMessage (fromFlag $ regVerbosity flags) 
+  setupMessage (fromFlag $ regVerbosity flags)
     "Package contains no library to register:" (packageId pkgDesc)
 
 instWithQt ::
@@ -290,16 +293,16 @@ class HasBuildInfo a where
   mapBI :: (BuildInfo -> BuildInfo) -> a -> a
 
 instance HasBuildInfo Library where
-  mapBI f x = x {libBuildInfo = f $ libBuildInfo x} 
+  mapBI f x = x {libBuildInfo = f $ libBuildInfo x}
 
 instance HasBuildInfo Executable where
-  mapBI f x = x {buildInfo = f $ buildInfo x} 
+  mapBI f x = x {buildInfo = f $ buildInfo x}
 
 instance HasBuildInfo TestSuite where
-  mapBI f x = x {testBuildInfo = f $ testBuildInfo x} 
+  mapBI f x = x {testBuildInfo = f $ testBuildInfo x}
 
 instance HasBuildInfo Benchmark where
-  mapBI f x = x {benchmarkBuildInfo = f $ benchmarkBuildInfo x} 
+  mapBI f x = x {benchmarkBuildInfo = f $ benchmarkBuildInfo x}
 
 maybeMapM :: (Monad m) => (a -> m b) -> (Maybe a) -> m (Maybe b)
 maybeMapM f = maybe (return Nothing) $ liftM Just . f
