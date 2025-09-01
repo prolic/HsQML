@@ -108,7 +108,7 @@ Library
         Graphics.QML.Internal.Objects
         Graphics.QML.Internal.Types
     Hs-source-dirs: src
-    C-sources:
+    Cxx-sources:
         cbits/Canvas.cpp
         cbits/Class.cpp
         cbits/ClipboardHelper.cpp
