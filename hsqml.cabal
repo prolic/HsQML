@@ -59,8 +59,7 @@ Custom-Setup
     Setup-depends:
         base             == 4.*,
         template-haskell == 2.*,
-        Cabal            >= 3.8 && < 3.12,
-        -- Cabal 3.12 changes type of 'findFileWithExtension'
+        Cabal            >= 3.8,
         filepath         >= 1.4.300 && < 1.5
 
 common extensions
