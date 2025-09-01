@@ -70,7 +70,7 @@ HsQMLObject* HsQMLObjectProxy::object(HsQMLEngine* engine)
         mObject = new HsQMLObject(this, engine);
 
         HSQML_LOG(5,
-            QString().sprintf("New QObject, class=%s, id=%d, qptr=%p.",
+            QString().asprintf("New QObject, class=%s, id=%d, qptr=%p.",
             mKlass->name(), mSerial, mObject));
     }
 
@@ -86,7 +86,7 @@ void HsQMLObjectProxy::clearObject()
     Q_ASSERT(gManager->isEventThread());
 
     HSQML_LOG(5,
-        QString().sprintf("Release QObject, class=%s, id=%d, qptr=%p.",
+        QString().asprintf("Release QObject, class=%s, id=%d, qptr=%p.",
         mKlass->name(), mSerial, mObject));
 
     mObject = NULL;
@@ -101,7 +101,7 @@ void HsQMLObjectProxy::tryGCLock()
         mObject->setGCLock();
 
         HSQML_LOG(5,
-            QString().sprintf("Lock QObject, class=%s, id=%d, qptr=%p.",
+            QString().asprintf("Lock QObject, class=%s, id=%d, qptr=%p.",
             mKlass->name(), mSerial, mObject));
     }
 }
@@ -115,7 +115,7 @@ void HsQMLObjectProxy::removeGCLock()
             mObject->clearGCLock();
 
             HSQML_LOG(5,
-                QString().sprintf("Unlock QObject, class=%s, id=%d, qptr=%p.",
+                QString().asprintf("Unlock QObject, class=%s, id=%d, qptr=%p.",
                 mKlass->name(), mSerial, mObject));
         }
         else {
@@ -160,7 +160,7 @@ void HsQMLObjectProxy::ref(RefSrc src)
     int count = mRefCount.fetchAndAddOrdered(1);
 
     HSQML_LOG(count == 0 ? 3 : 4,
-        QString().sprintf("%s ObjProxy, class=%s, id=%d, src=%s, count=%d.",
+        QString().asprintf("%s ObjProxy, class=%s, id=%d, src=%s, count=%d.",
         count ? "Ref" : "New", mKlass->name(),
         mSerial, cRefSrcNames[src], count+1));
 
@@ -190,7 +190,7 @@ void HsQMLObjectProxy::deref(RefSrc src)
     int count = mRefCount.fetchAndAddOrdered(-1);
 
     HSQML_LOG(count == 1 ? 3 : 4,
-        QString().sprintf("%s ObjProxy, class=%s, id=%d, src=%s, count=%d.",
+        QString().asprintf("%s ObjProxy, class=%s, id=%d, src=%s, count=%d.",
         count > 1 ? "Deref" : "Delete", mKlass->name(),
         mSerial, cRefSrcNames[src], count));
 
