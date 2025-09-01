@@ -13,6 +13,7 @@ import Distribution.Simple
 import Distribution.Simple.BuildPaths
 import Distribution.Simple.Compiler
 import Distribution.Simple.LocalBuildInfo
+import Distribution.Simple.PreProcess
 import Distribution.Simple.Program
 import Distribution.Simple.Program.Ar
 import Distribution.Simple.Program.Ld
@@ -183,7 +184,7 @@ buildGHCiFix verb pkgDesc lbi lib =
         hsObjs = map ((bDir </>) . (<.> "o")) ms
         lname  = getHSLibraryName $ componentUnitId clbi
     stubObjs <- fmap catMaybes $
-      mapM (findFileWithExtension ["o"] [bDir]) $ map (++ "_stub") ms
+      mapM (findFileWithExtension [Suffix "o"] [bDir]) $ map (++ "_stub") ms
     case os of
       "mingw32" -> do
         createArLibArchive verb lbi (bDir </> lname <.> "a") (stubObjs ++ hsObjs)
