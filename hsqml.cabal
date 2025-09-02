@@ -60,7 +60,7 @@ Custom-Setup
         base             == 4.*,
         template-haskell == 2.*,
         Cabal            >= 3.8,
-        filepath         >= 1.4.300 && < 1.5
+        filepath         >= 1.4.300 && < 1.6
 
 common extensions
   default-extensions:
@@ -81,12 +81,12 @@ Library
     import: ghc-options
     Build-depends:
         base         == 4.*,
-        bytestring   >= 0.11.5 && < 0.12,
+        bytestring   >= 0.11.5 && < 0.13,
         containers   >= 0.7 && < 0.9,
-        filepath     >= 1.4.300 && < 1.5,
+        filepath     >= 1.4.300 && < 1.6,
         text         >= 2.1.2 && < 2.2,
         tagged       >= 0.8.9 && < 0.9,
-        transformers >= 0.6.2 && < 0.7,
+        transformers >= 0.6.1 && < 0.7,
     Exposed-modules:
         Graphics.QML
         Graphics.QML.Debug
