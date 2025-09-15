@@ -1,6 +1,6 @@
 cabal-version:      3.8
 Name:               hsqml
-Version:            0.3.6.1
+Version:            0.3.7.0
 Build-type:         Custom
 License:            BSD-3-Clause
 License-file:       LICENSE
@@ -59,7 +59,7 @@ Custom-Setup
     Setup-depends:
         base             == 4.*,
         template-haskell == 2.*,
-        Cabal            >= 3.8,
+        Cabal            >= 3.8 && <3.12,
         filepath         >= 1.4.300 && < 1.6
 
 common extensions
